@@ -1,0 +1,3 @@
+# Co-author profile links used to hyperlink names in the publication list.
+# Format: "lastname": [{firstname: ["Full", "F."], url: https://...}]
+{}

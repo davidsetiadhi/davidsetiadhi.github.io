@@ -1,0 +1,11 @@
+# Social and academic profile links shown on the About page.
+# Full list of supported keys: https://github.com/al-org-dev/al-icons (jekyll-socials)
+
+orcid_id: 0000-0002-1765-1294
+linkedin_username: david-setiadhi-630410108
+github_username: davidsetiadhi
+# TODO(David): fill these in, then remove the leading "# "
+# scholar_userid: XXXXXXXXXXXX     # from your Google Scholar profile URL (?user=...)
+# scopus_id: 0000000000
+# research_gate_profile: David-Setiadhi
+rss_icon: true
