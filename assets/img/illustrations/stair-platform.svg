@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" role="img">
+<defs><pattern id="g" width="22" height="22" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#c6e1dc"/></pattern></defs>
+<rect width="800" height="500" fill="#e8f3f1"/><rect width="800" height="500" fill="url(#g)"/>
+<g stroke="#134e4a" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none">
+<path d="M80 424H720" stroke="#5eaaa0" stroke-width="3"/>
+<g transform="rotate(8 548 424)"><path d="M220 395H560M540 395V170M420 395V176M220 395L420 176" stroke-width="8"/><path d="M247 358H299" stroke-width="6"/><path d="M281 322H333" stroke-width="6"/><path d="M314 286H366" stroke-width="6"/><path d="M347 249H399" stroke-width="6"/><path d="M381 212H433" stroke-width="6"/><rect x="416" y="164" width="146" height="14" rx="3" fill="#0f766e"/><path d="M250 330L440 120H560V170M440 120V176" stroke="#0f766e" stroke-width="5"/><circle cx="236" cy="410" r="14" fill="#ffffff"/><circle cx="548" cy="410" r="14" fill="#ffffff"/><circle cx="440" cy="290" r="16" fill="#ffffff" stroke-width="3"/><path d="M440 274A16 16 0 0 1 456 290H440z M440 306A16 16 0 0 1 424 290H440z" fill="#134e4a" stroke="none"/></g>
+<path d="M459.7 294.3V424" stroke="#e0892b" stroke-width="3" stroke-dasharray="7 7"/><path d="M449.7 408L459.7 422L469.7 408" stroke="#e0892b" stroke-width="3"/>
+<path d="M438 424A110 110 0 0 1 439.1 408.7" stroke="#e0892b" stroke-width="3"/><text x="398" y="410" font-size="30" font-style="italic" fill="#134e4a" stroke="none" font-family="'Inter','Segoe UI',Arial,sans-serif">θ</text>
+<path d="M171 289H252" stroke="#e0892b" stroke-width="6"/><path d="M236 275L254 289L236 303" stroke="#e0892b" stroke-width="6"/>
+</g></svg>

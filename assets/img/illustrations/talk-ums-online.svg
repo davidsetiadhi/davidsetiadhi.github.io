@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" role="img">
+<defs><pattern id="g" width="22" height="22" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#c6e1dc"/></pattern></defs>
+<rect width="800" height="500" fill="#e8f3f1"/><rect width="800" height="500" fill="url(#g)"/>
+<g stroke="#134e4a" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none">
+<rect x="220" y="96" width="360" height="236" rx="12" fill="#134e4a"/><rect x="236" y="112" width="328" height="204" rx="4" fill="#ffffff" stroke="none"/>
+<rect x="242" y="118" width="154" height="94" rx="6" fill="#dcefeb" stroke="none"/>
+<path d="M262 196V150M262 196H380" stroke="#0f766e" stroke-width="3"/><path d="M272 186L300 166L322 176L366 140" stroke="#e0892b" stroke-width="4"/>
+<rect x="402" y="118" width="154" height="94" rx="6" fill="#cfe7e2" stroke="none"/>
+<circle cx="479" cy="158" r="15" fill="#5eaaa0" stroke="none"/><path d="M449 210c0-22 13-32 30-32s30 10 30 32" fill="#5eaaa0" stroke="none"/>
+<rect x="242" y="218" width="154" height="94" rx="6" fill="#cfe7e2" stroke="none"/>
+<circle cx="319" cy="258" r="15" fill="#5eaaa0" stroke="none"/><path d="M289 310c0-22 13-32 30-32s30 10 30 32" fill="#5eaaa0" stroke="none"/>
+<rect x="402" y="218" width="154" height="94" rx="6" fill="#cfe7e2" stroke="none"/>
+<circle cx="479" cy="258" r="15" fill="#5eaaa0" stroke="none"/><path d="M449 310c0-22 13-32 30-32s30 10 30 32" fill="#5eaaa0" stroke="none"/>
+<path d="M180 332H620L660 366H140z" fill="#cfe7e2"/><path d="M370 348H430" stroke-width="3"/>
+<path d="M640 120A20 20 0 0 1 660 100" stroke="#e0892b" stroke-width="4" transform="rotate(0)"/>
+<path d="M622 120A38 38 0 0 1 660 82" stroke="#e0892b" stroke-width="4" transform="rotate(0)"/>
+<path d="M604 120A56 56 0 0 1 660 64" stroke="#e0892b" stroke-width="4" transform="rotate(0)"/>
+<circle cx="662" cy="122" r="5" fill="#e0892b" stroke="none"/>
+<rect x="96" y="150" width="86" height="80" rx="8" fill="#ffffff" stroke-width="3"/><path d="M96 172H182" stroke="#0f766e" stroke-width="10"/><text x="139" y="216" text-anchor="middle" font-size="26" font-weight="700" fill="#134e4a" stroke="none" font-family="'Inter','Segoe UI',Arial,sans-serif">Nov</text>
+</g></svg>
