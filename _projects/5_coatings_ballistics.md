@@ -4,7 +4,11 @@ title: Coating and ballistic mechanics
 description: Earlier FEM work at UMS. Residual stress in PVD TiN coatings and anti-projectile performance of armor
 importance: 5
 category: research
+img: assets/img/illustrations/coatings-ballistics.svg
+og_image: /assets/img/og/coatings-ballistics.png
 ---
+
+{% include figure.liquid path="assets/img/illustrations/coatings-ballistics.svg" class="img-fluid rounded" alt="Illustration: coatings ballistics" %}
 
 Finite element work from my years at Universitas Muhammadiyah Surakarta, with Prof. Tri Widodo Besar Riyadi:
 

@@ -25,6 +25,17 @@ latest_posts:
   limit: 3
 ---
 
+<div class="availability">
+  <p class="availability-lead">I model and build ozone sterilization systems, and I design and validate industrial mechanisms.</p>
+  <p class="availability-status">PhD defense in mid-December 2026. Available from January 2027 for <strong>postdoc</strong>, <strong>lecturer</strong>, or <strong>R&D engineer</strong> roles, in Türkiye, Indonesia, or abroad.</p>
+  <p class="availability-actions">
+    <a class="btn btn-sm availability-btn" href="{{ '/assets/pdf/David_Setiadhi_CV.pdf' | relative_url }}"><i class="fa-solid fa-file-arrow-down"></i> Download CV</a>
+    {% al_email_protect_link site.data.contact.email %}
+    <a class="btn btn-sm availability-btn-outline" href="{{ '/tools/' | relative_url }}"><i class="fa-solid fa-calculator"></i> Engineering tools</a>
+    <a href="{{ '/id/' | relative_url }}" lang="id">Bahasa Indonesia</a>
+  </p>
+</div>
+
 I am a mechanical engineer and PhD candidate at Bursa Uludağ University (defense expected December 2026), combining doctoral research in CFD, mathematical modeling, and experimental validation with 3.5 years of industrial R&D.
 
 My dissertation studies gas-phase ozone transport in a closed recirculating sterilization chamber for reusable medical devices. I couple a mathematical model of ozone generation and decay with ANSYS Fluent simulation, and validate both against measurements on an experimental setup I built and instrumented. The technical background of this work is published as a review in the _Journal of Physics D: Applied Physics_ (2026).

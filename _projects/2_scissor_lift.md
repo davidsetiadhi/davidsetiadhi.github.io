@@ -4,7 +4,11 @@ title: Double scissor-lift for Bosch TS5 lines
 description: Industrial R&D at Mertay Makina. Concept-to-delivery design of a conveyor-integrated lifting mechanism
 importance: 2
 category: industry
+img: assets/img/illustrations/scissor-lift.svg
+og_image: /assets/img/og/scissor-lift.png
 ---
+
+{% include figure.liquid path="assets/img/illustrations/scissor-lift.svg" class="img-fluid rounded" alt="Illustration: scissor lift" %}
 
 A conveyor-integrated double scissor-lift mechanism developed at Mertay Makina for Bosch TS5 assembly lines. I led the development from concept to fabrication:
 

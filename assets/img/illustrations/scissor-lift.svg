@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" role="img">
+<defs><pattern id="g" width="22" height="22" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#c6e1dc"/></pattern></defs>
+<rect width="800" height="500" fill="#e8f3f1"/><rect width="800" height="500" fill="url(#g)"/>
+<g stroke="#134e4a" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none">
+<path d="M80 430H720" stroke="#5eaaa0" stroke-width="3"/>
+<path d="M150 390v40M650 390v40" stroke-width="8"/><rect x="120" y="366" width="560" height="26" rx="4" fill="#cfe7e2"/>
+<circle cx="145" cy="356" r="10" fill="#ffffff" stroke-width="3"/>
+<circle cx="183" cy="356" r="10" fill="#ffffff" stroke-width="3"/>
+<circle cx="221" cy="356" r="10" fill="#ffffff" stroke-width="3"/>
+<circle cx="259" cy="356" r="10" fill="#ffffff" stroke-width="3"/>
+<circle cx="563" cy="356" r="10" fill="#ffffff" stroke-width="3"/>
+<circle cx="601" cy="356" r="10" fill="#ffffff" stroke-width="3"/>
+<circle cx="639" cy="356" r="10" fill="#ffffff" stroke-width="3"/>
+<circle cx="677" cy="356" r="10" fill="#ffffff" stroke-width="3"/>
+<rect x="282" y="332" width="236" height="14" rx="3" fill="#134e4a"/>
+<path d="M305 332L495 252M495 332L305 252" stroke-width="8"/>
+<circle cx="400" cy="292.0" r="7" fill="#ffffff" stroke-width="3"/>
+<path d="M305 252L495 172M495 252L305 172" stroke-width="8"/>
+<circle cx="400" cy="212.0" r="7" fill="#ffffff" stroke-width="3"/>
+<circle cx="305" cy="252" r="7" fill="#ffffff" stroke-width="3"/>
+<circle cx="495" cy="252" r="7" fill="#ffffff" stroke-width="3"/>
+<path d="M335 318L405 290" stroke="#e0892b" stroke-width="14"/><path d="M405 290L470 264" stroke="#134e4a" stroke-width="5"/>
+<rect x="282" y="158" width="236" height="14" rx="3" fill="#0f766e"/>
+<rect x="325" y="100" width="150" height="58" rx="5" fill="#ffffff"/><path d="M345 120H455M345 138H420" stroke="#5eaaa0" stroke-width="3"/>
+<path d="M600 300V150" stroke="#e0892b" stroke-width="4" stroke-dasharray="8 8"/><path d="M586 166L600 146L614 166" stroke="#e0892b" stroke-width="4"/>
+</g></svg>

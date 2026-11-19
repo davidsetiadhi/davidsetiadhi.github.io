@@ -221,3 +221,117 @@ h4,
   font-size: 1.35rem;
   font-weight: 600;
 }
+
+// About page: availability block
+.availability {
+  border-left: 4px solid var(--global-theme-color);
+  padding: 0.25rem 0 0.25rem 1.1rem;
+  margin: 0 0 1.75rem;
+}
+.availability-lead {
+  font-family: "Source Serif 4", Georgia, serif;
+  font-size: 1.3rem;
+  line-height: 1.35;
+  margin-bottom: 0.5rem;
+}
+.availability-status {
+  color: var(--global-text-color-light);
+  margin-bottom: 0.75rem;
+}
+.availability-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  align-items: center;
+  margin: 0;
+}
+.availability-btn,
+.availability-btn:visited {
+  background: var(--global-theme-color);
+  color: var(--global-bg-color) !important;
+  border-radius: 0.35rem;
+}
+.availability-btn:hover {
+  background: var(--global-hover-color);
+}
+.availability-btn-outline {
+  border: 1px solid var(--global-theme-color);
+  color: var(--global-theme-color) !important;
+  border-radius: 0.35rem;
+}
+
+// Engineering tools
+.tool-index {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+}
+.tool-index li {
+  border: 1px solid var(--global-divider-color);
+  border-radius: 0.5rem;
+  padding: 0.9rem 1rem;
+}
+.tool-index li a {
+  font-weight: 600;
+}
+.tool-index li p {
+  margin: 0.35rem 0 0;
+  font-size: 0.9rem;
+  color: var(--global-text-color-light);
+}
+.calc {
+  border: 1px solid var(--global-divider-color);
+  border-radius: 0.5rem;
+  padding: 1rem 1.25rem;
+  margin: 1.25rem 0;
+}
+.calc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.75rem 1.25rem;
+}
+.calc label {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.9rem;
+  gap: 0.25rem;
+  margin: 0;
+}
+.calc input,
+.calc select {
+  font: inherit;
+  padding: 0.35rem 0.5rem;
+  border: 1px solid var(--global-divider-color);
+  border-radius: 0.35rem;
+  background: var(--global-bg-color);
+  color: var(--global-text-color);
+}
+.calc input:focus-visible,
+.calc select:focus-visible {
+  outline: 2px solid var(--global-theme-color);
+  outline-offset: 1px;
+}
+.calc-out {
+  margin-top: 1rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--global-divider-color);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.75rem;
+}
+.calc-out div b {
+  display: block;
+  font-size: 1.35rem;
+  color: var(--global-theme-color);
+}
+.calc-out div span {
+  font-size: 0.85rem;
+  color: var(--global-text-color-light);
+}
+.calc-warn {
+  color: #b45309;
+  font-size: 0.9rem;
+  margin: 0.5rem 0 0;
+}

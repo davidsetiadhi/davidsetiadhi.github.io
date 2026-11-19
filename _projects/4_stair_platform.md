@@ -4,7 +4,11 @@ title: Maintenance stair platform stability
 description: Rigid-body dynamics study of the tipping threshold of undocked platforms
 importance: 4
 category: industry
+img: assets/img/illustrations/stair-platform.svg
+og_image: /assets/img/og/stair-platform.png
 ---
+
+{% include figure.liquid path="assets/img/illustrations/stair-platform.svg" class="img-fluid rounded" alt="Illustration: stair platform" %}
 
 Mobile maintenance stair platforms can tip over when they are not docked. This study uses rigid-body dynamics to find the tipping threshold of an undocked platform under realistic loads, giving a basis for safe design limits.
 

@@ -4,7 +4,11 @@ title: EV battery pack case thermal study
 description: Comparative FEM of sheet metal and SMC battery cases, with UN/ECE R100 thermal-shock testing
 importance: 3
 category: research
+img: assets/img/illustrations/battery-case.svg
+og_image: /assets/img/og/battery-case.png
 ---
+
+{% include figure.liquid path="assets/img/illustrations/battery-case.svg" class="img-fluid rounded" alt="Illustration: battery case" %}
 
 Battery pack cases for electric vehicles must protect the cells and manage heat. This TÜBİTAK 1501 funded study compared sheet metal and sheet molding compound (SMC) cases:
 
