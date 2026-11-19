@@ -8,7 +8,14 @@ og_image: /assets/img/og/scissor-lift.png
 
 Maximum deflection, bending moment, and bending stress for the four load cases that cover most quick checks of frames, fixtures, and brackets.
 
+<figure class="tool-figure">
+{% include figure.liquid path="assets/img/tools/beam-deflection.svg" class="img-fluid rounded" alt="Four beam load cases and three cross-sections" %}
+<figcaption class="fig-caption"><strong>Figure 1.</strong> The four load cases (a–d), each with span <em>L</em> (mm), point load <em>P</em> (N) or uniform load <em>w</em> (N/mm), and maximum deflection <em>δ</em> (mm; dashed shapes exaggerated), and the three cross-sections (e) with dimensions <em>b</em> and <em>h</em> (mm). The simply supported beams deflect most at midspan, and the cantilevers at the free end.</figcaption>
+</figure>
+
 <div class="calc" data-calc="beam-deflection"><noscript>This calculator needs JavaScript.</noscript></div>
+<p class="fig-caption"><strong>Figure 2.</strong> Deflected shape <em>y</em>(<em>x</em>) (mm) along the span <em>x</em> (mm) for the selected case and section. The deflection axis is stretched relative to the span axis so the shape is visible. The marked point is the maximum deflection <em>δ</em> given above.</p>
+
 
 #### Formulas
 

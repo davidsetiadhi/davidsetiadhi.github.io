@@ -163,14 +163,9 @@
         { k: "h", label: "Dimension h", unit: "mm", value: 60 },
       ],
       calc: function (v) {
-        var I, c;
-        if (v.sec === "rect") { I = (v.b * Math.pow(v.h, 3)) / 12; c = v.h / 2; }
-        else if (v.sec === "round") { I = (Math.PI * Math.pow(v.b, 4)) / 64; c = v.b / 2; }
-        else {
-          var di = v.b - 2 * v.h;
-          if (di < 0) return { warn: "Wall is thicker than the radius." };
-          I = (Math.PI * (Math.pow(v.b, 4) - Math.pow(di, 4))) / 64; c = v.b / 2;
-        }
+        var sec = section(v);
+        if (sec.warn) return sec;
+        var I = sec.I, c = sec.c;
         var E = v.e * 1000, L = v.l, P = v.load, d, M;
         if (v.cas === "ss-p") { d = (P * Math.pow(L, 3)) / (48 * E * I); M = (P * L) / 4; }
         else if (v.cas === "ss-w") { d = (5 * P * Math.pow(L, 4)) / (384 * E * I); M = (P * L * L) / 8; }
@@ -237,6 +232,159 @@
     },
   };
 
+  // Second moment of area I (mm4) and extreme-fibre distance c (mm) of the beam section.
+  function section(v) {
+    if (v.sec === "rect") return { I: (v.b * Math.pow(v.h, 3)) / 12, c: v.h / 2 };
+    if (v.sec === "round") return { I: (Math.PI * Math.pow(v.b, 4)) / 64, c: v.b / 2 };
+    var di = v.b - 2 * v.h;
+    if (di < 0) return { warn: "Wall is thicker than the radius." };
+    return { I: (Math.PI * (Math.pow(v.b, 4) - Math.pow(di, 4))) / 64, c: v.b / 2 };
+  }
+
+  // Deflection (mm, positive downward) at x for the four beam cases.
+  function beamY(cas, P, L, EI, x) {
+    if (cas === "ss-p") { var u = Math.min(x, L - x); return (P * u * (3 * L * L - 4 * u * u)) / (48 * EI); }
+    if (cas === "ss-w") return (P * x * (Math.pow(L, 3) - 2 * L * x * x + Math.pow(x, 3))) / (24 * EI);
+    if (cas === "cant-p") return (P * x * x * (3 * L - x)) / (6 * EI);
+    return (P * x * x * (6 * L * L - 4 * L * x + x * x)) / (24 * EI);
+  }
+
+  function sample(f, x0, x1, n) {
+    var pts = [];
+    for (var i = 0; i <= n; i++) { var x = x0 + ((x1 - x0) * i) / n; pts.push([x, f(x)]); }
+    return pts;
+  }
+
+  // Optional charts: plot(v) -> { x: {label}, y: {label, log}, series: [{pts, label}], refs: [{y, label}] }.
+  CALCS["ozone-ct"].plot = function (v) {
+    if (v.c <= 0 || v.ct <= 0) return null;
+    var tEnd = (1.25 * v.ct) / v.c;
+    return {
+      x: { label: "Time, t (min)" }, y: { label: "Accumulated dose, C·t (ppm·min)" },
+      series: [{ pts: sample(function (t) { return v.c * t; }, 0, tEnd, 2) }],
+      refs: [{ y: v.ct, label: "target CT" }],
+      marks: [{ x: v.ct / v.c, y: v.ct }],
+    };
+  };
+  CALCS["ozone-decay"].plot = function (v) {
+    if (v.half <= 0 || v.c0 <= 0) return null;
+    var k = Math.LN2 / v.half + v.ach / 60;
+    var tSafe = v.cs > 0 && v.cs < v.c0 ? Math.log(v.c0 / v.cs) / k : 5 / k;
+    return {
+      x: { label: "Time after the exposure phase, t (min)" }, y: { label: "Ozone concentration, C (ppm)", log: true },
+      series: [{ pts: sample(function (t) { return v.c0 * Math.exp(-k * t); }, 0, 1.2 * tSafe, 120) }],
+      refs: v.cs > 0 && v.cs < v.c0 ? [{ y: v.cs, label: "Cₛ door-opening level" }] : [],
+      marks: v.cs > 0 && v.cs < v.c0 ? [{ x: tSafe, y: v.cs }] : [],
+    };
+  };
+  CALCS["ozone-buildup"].plot = function (v) {
+    var r = CALCS["ozone-buildup"].calc(v);
+    if (!r.out) return null;
+    var k = Math.LN2 / v.half;
+    var css = mgToPpm(((v.g * 1000) / 60 / (v.vol / 1000)) / k, v.t, v.p);
+    var tT = v.target > 0 && v.target < css ? -Math.log(1 - v.target / css) / k : 0;
+    var refs = [{ y: css, label: "Cₛₛ steady state" }];
+    if (v.target > 0) refs.push({ y: v.target, label: "target" });
+    return {
+      x: { label: "Time after the generator starts, t (min)" }, y: { label: "Ozone concentration, C (ppm)" },
+      series: [{ pts: sample(function (t) { return css * (1 - Math.exp(-k * t)); }, 0, Math.max(5 / k, 1.2 * tT), 120) }],
+      refs: refs,
+      marks: tT ? [{ x: tT, y: v.target }] : [],
+    };
+  };
+  CALCS["beam-deflection"].plot = function (v) {
+    var sec = section(v);
+    if (sec.warn || v.l <= 0 || v.e <= 0) return null;
+    var EI = v.e * 1000 * sec.I;
+    var pts = sample(function (x) { return -beamY(v.cas, v.load, v.l, EI, x); }, 0, v.l, 120);
+    var tip = v.cas.indexOf("ss") === 0 ? v.l / 2 : v.l;
+    return {
+      x: { label: "Position along the span, x (mm)" }, y: { label: "Deflection, y (mm)" },
+      series: [{ pts: pts }],
+      refs: [{ y: 0, label: "undeformed axis" }],
+      marks: [{ x: tip, y: -beamY(v.cas, v.load, v.l, EI, tip) }],
+    };
+  };
+  CALCS["wall-heat"].plot = function (v) {
+    var r = CALCS["wall-heat"].calc(v);
+    if (!r.out) return null;
+    var rTot = 1 / v.hi + v.l1 / 1000 / v.k1 + (v.l2 > 0 ? v.l2 / 1000 / v.k2 : 0) + 1 / v.ho;
+    var q = (v.ti - v.to) / rTot;
+    var tsi = v.ti - q / v.hi, t12 = tsi - (q * v.l1) / 1000 / v.k1;
+    var pts = [[0, tsi], [v.l1, t12]];
+    if (v.l2 > 0) pts.push([v.l1 + v.l2, t12 - (q * v.l2) / 1000 / v.k2]);
+    return {
+      x: { label: "Position through the wall from the inner surface (mm)" }, y: { label: "Temperature, T (°C)" },
+      series: [{ pts: pts }],
+      refs: [{ y: v.ti, label: "Tᵢ inside fluid" }, { y: v.to, label: "Tₒ outside fluid" }],
+      marks: pts.map(function (p) { return { x: p[0], y: p[1] }; }),
+    };
+  };
+
+  // Tick values: "nice" linear steps, or one per decade on a log axis.
+  function ticks(lo, hi, log) {
+    var out = [], i;
+    if (log) {
+      for (i = Math.floor(Math.log10(lo)); i <= Math.ceil(Math.log10(hi)); i++) out.push(Math.pow(10, i));
+      return out;
+    }
+    var span = hi - lo || Math.abs(hi) || 1, raw = span / 5, mag = Math.pow(10, Math.floor(Math.log10(raw)));
+    var step = [1, 2, 2.5, 5, 10].map(function (m) { return m * mag; }).filter(function (st) { return st >= raw; })[0];
+    for (i = Math.ceil(lo / step) * step; i <= hi + step * 1e-9; i += step) out.push(Math.abs(i) < step * 1e-9 ? 0 : i);
+    return out;
+  }
+
+  function tickLabel(x) {
+    var a = Math.abs(x);
+    if (a !== 0 && (a >= 1e5 || a < 1e-3)) return x.toExponential(0).replace("e+", "e");
+    return Number(x.toPrecision(6)).toLocaleString("en-US", { maximumFractionDigits: 4 });
+  }
+
+  // Render a plot spec as an inline SVG line chart.
+  function chart(p) {
+    var W = 640, H = 340, L = 78, R = 150, T = 16, B = 52;
+    var xs = [], ys = [];
+    p.series.forEach(function (sr) { sr.pts.forEach(function (q) { xs.push(q[0]); ys.push(q[1]); }); });
+    (p.refs || []).forEach(function (rf) { ys.push(rf.y); });
+    var x0 = Math.min.apply(null, xs), x1 = Math.max.apply(null, xs);
+    var y0 = Math.min.apply(null, ys), y1 = Math.max.apply(null, ys);
+    var log = p.y.log;
+    if (log) { y0 = Math.pow(10, Math.floor(Math.log10(Math.max(y0, 1e-6)))); y1 = Math.pow(10, Math.ceil(Math.log10(y1))); }
+    else { var pad = (y1 - y0 || Math.abs(y1) || 1) * 0.08; y0 = y0 >= 0 ? 0 : y0 - pad; y1 = y1 + pad; }
+    var xt = ticks(x0, x1, false);
+    x1 = Math.max(x1, xt[xt.length - 1]);
+    var yt = ticks(y0, y1, log).filter(function (t) { return t >= y0 - 1e-12 && t <= y1 * (1 + 1e-9) + 1e-12; });
+    var X = function (x) { return L + ((x - x0) / (x1 - x0 || 1)) * (W - L - R); };
+    var Y = function (y) {
+      var f = log ? (Math.log10(Math.max(y, y0)) - Math.log10(y0)) / (Math.log10(y1) - Math.log10(y0)) : (y - y0) / (y1 - y0 || 1);
+      return H - B - f * (H - T - B);
+    };
+    var g = "";
+    yt.forEach(function (t) {
+      g += '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + Y(t) + '" y2="' + Y(t) + '" stroke="#e5e7eb"/>' +
+        '<text x="' + (L - 8) + '" y="' + (Y(t) + 4) + '" text-anchor="end">' + tickLabel(t) + "</text>";
+    });
+    xt.forEach(function (t) {
+      g += '<line x1="' + X(t) + '" x2="' + X(t) + '" y1="' + (H - B) + '" y2="' + (H - B + 5) + '" stroke="#1f2937"/>' +
+        '<text x="' + X(t) + '" y="' + (H - B + 19) + '" text-anchor="middle">' + tickLabel(t) + "</text>";
+    });
+    (p.refs || []).forEach(function (rf) {
+      g += '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + Y(rf.y) + '" y2="' + Y(rf.y) + '" stroke="#c2410c" stroke-width="1.5" stroke-dasharray="6 4"/>' +
+        '<text x="' + (W - R + 6) + '" y="' + (Y(rf.y) + 4) + '" fill="#c2410c">' + esc(rf.label) + "</text>";
+    });
+    p.series.forEach(function (sr) {
+      g += '<path fill="none" stroke="#0f766e" stroke-width="2.5" stroke-linejoin="round" d="' +
+        sr.pts.map(function (q, i) { return (i ? "L" : "M") + X(q[0]).toFixed(1) + " " + Y(q[1]).toFixed(1); }).join("") + '"/>';
+    });
+    (p.marks || []).forEach(function (m) {
+      g += '<circle cx="' + X(m.x).toFixed(1) + '" cy="' + Y(m.y).toFixed(1) + '" r="4.5" fill="#ffffff" stroke="#0f766e" stroke-width="2"/>';
+    });
+    g += '<path d="M' + L + " " + T + "V" + (H - B) + "H" + (W - R) + '" fill="none" stroke="#1f2937" stroke-width="1.5"/>';
+    g += '<text x="' + ((L + W - R) / 2) + '" y="' + (H - 10) + '" text-anchor="middle" font-size="13">' + esc(p.x.label) + "</text>";
+    g += '<text transform="translate(18 ' + ((T + H - B) / 2) + ') rotate(-90)" text-anchor="middle" font-size="13">' + esc(p.y.label) + "</text>";
+    return '<svg viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="' + esc(p.y.label + " against " + p.x.label) + '" font-family="Arial, Helvetica, sans-serif" font-size="12" fill="#1f2937">' + g + "</svg>";
+  }
+
   function fmt(x, dp) {
     if (!isFinite(x)) return "–";
     return Number(x).toLocaleString("en-US", { minimumFractionDigits: dp, maximumFractionDigits: dp });
@@ -258,8 +406,9 @@
           : '<input type="number" inputmode="decimal" step="any" name="' + i.k + '" value="' + i.value + '">';
         return '<label for="' + id + i.k + '">' + esc(i.label) + (i.unit ? ' <span class="text-muted">(' + esc(i.unit) + ")</span>" : "") + field.replace("name=", 'id="' + id + i.k + '" name=') + "</label>";
       }).join("") +
-      '</form><div class="calc-out" aria-live="polite"></div><p class="calc-warn" hidden></p>';
-    var form = el.querySelector("form"), out = el.querySelector(".calc-out"), warn = el.querySelector(".calc-warn");
+      '</form><div class="calc-out" aria-live="polite"></div><p class="calc-warn" hidden></p>' +
+      (spec.plot ? '<div class="calc-plot"></div>' : "");
+    var form = el.querySelector("form"), out = el.querySelector(".calc-out"), warn = el.querySelector(".calc-warn"), plot = el.querySelector(".calc-plot");
     function run() {
       var v = {};
       spec.inputs.forEach(function (i) {
@@ -271,13 +420,18 @@
       out.innerHTML = (r.out || []).map(function (o) { return "<div><b>" + esc(o[0]) + "</b><span>" + esc(o[1]) + "</span></div>"; }).join("");
       warn.hidden = !r.warn;
       warn.textContent = r.warn || "";
+      if (plot) {
+        var pl = !bad.length && r.out ? spec.plot(v) : null;
+        plot.hidden = !pl;
+        plot.innerHTML = pl ? chart(pl) : "";
+      }
     }
     form.addEventListener("input", run);
     form.addEventListener("submit", function (e) { e.preventDefault(); });
     run();
   }
 
-  if (typeof module !== "undefined") module.exports = { CALCS: CALCS, ppmToMg: ppmToMg, mgToPpm: mgToPpm };
+  if (typeof module !== "undefined") module.exports = { CALCS: CALCS, ppmToMg: ppmToMg, mgToPpm: mgToPpm, chart: chart };
   if (typeof document !== "undefined") {
     var start = function () { document.querySelectorAll("[data-calc]").forEach(mount); };
     if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start);

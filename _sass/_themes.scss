@@ -335,3 +335,30 @@ h4,
   font-size: 0.9rem;
   margin: 0.5rem 0 0;
 }
+
+// Tool figures and live charts (white panels, like figures in a paper)
+.tool-figure {
+  margin: 1.25rem 0;
+}
+.tool-figure img {
+  background: #fff;
+  border: 1px solid var(--global-divider-color);
+}
+.fig-caption {
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: var(--global-text-color-light);
+  margin: 0.5rem 0 1.25rem;
+}
+.calc-plot {
+  margin-top: 1rem;
+  background: #fff;
+  border: 1px solid var(--global-divider-color);
+  border-radius: 0.4rem;
+  padding: 0.5rem;
+}
+.calc-plot svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}

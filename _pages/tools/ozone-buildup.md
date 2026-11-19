@@ -8,7 +8,14 @@ og_image: /assets/img/og/ozone-chamber.png
 
 How high can a given ozone generator push the concentration in a closed chamber, and how long does it take? Treating the chamber as one well-mixed volume with first-order decay gives a quick first answer.
 
+<figure class="tool-figure">
+{% include figure.liquid path="assets/img/tools/ozone-buildup.svg" class="img-fluid rounded" alt="Ozone generator feeding a well-mixed chamber with first-order decay" %}
+<figcaption class="fig-caption"><strong>Figure 1.</strong> Ozone generator with output <em>Ġ</em> (g/h) feeding a well-mixed chamber of volume <em>V</em> (L). The concentration <em>C</em>(<em>t</em>) rises until generation balances first-order decay, <em>kVC</em>, where <em>k</em> = ln 2 / <em>t</em><sub>1/2</sub>.</figcaption>
+</figure>
+
 <div class="calc" data-calc="ozone-buildup"><noscript>This calculator needs JavaScript.</noscript></div>
+<p class="fig-caption"><strong>Figure 2.</strong> Ozone concentration <em>C</em> (ppm) against time <em>t</em> (min) after the generator starts, for the values above. The curve approaches the steady state <em>C</em><sub>ss</sub>, and the marked point is where it reaches the target. A target above <em>C</em><sub>ss</sub> is never reached.</p>
+
 
 #### Formulas
 

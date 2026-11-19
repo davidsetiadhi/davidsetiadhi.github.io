@@ -8,6 +8,11 @@ og_image: /assets/img/og/scissor-lift.png
 
 A first sizing pass for a hydraulic cylinder: the smallest bore that gives the force at your pressure, the next standard bore, and the pump flow for the extension speed.
 
+<figure class="tool-figure">
+{% include figure.liquid path="assets/img/tools/hydraulic-cylinder.svg" class="img-fluid rounded" alt="Section of a hydraulic cylinder with bore, rod, pressure, flow, force and speed" %}
+<figcaption class="fig-caption"><strong>Figure 1.</strong> Section of a double-acting hydraulic cylinder. Pressure <em>p</em> (bar) acts on the cap side over the bore diameter <em>D</em> (mm) and pushes the rod out with force <em>F</em> (kN) at speed <em>v</em> (mm/s), fed by the flow <em>Q</em> (L/min). On the return stroke the pressure acts only on the annulus between the bore and the rod diameter <em>d</em> (mm), so the pull force is smaller than the push force.</figcaption>
+</figure>
+
 <div class="calc" data-calc="hydraulic-cylinder"><noscript>This calculator needs JavaScript.</noscript></div>
 
 #### Formulas
