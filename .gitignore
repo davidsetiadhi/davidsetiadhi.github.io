@@ -1,29 +1,16 @@
-_site
-.bundle
-.DS_store
-.idea
-.jekyll-cache
-.jekyll-metadata
-.ruby-version
-.sass-cache
-.tweet-cache
-.venv
-assets/libs/
-assets/rendercv/rendercv_output/*.typ
-al-folio-upgrade-report.md
+# Astro
 node_modules/
-output/playwright/
-test-results/
-vendor
+dist/
+.astro/
 
 # Python bytecode from bin/ helper scripts
 __pycache__/
 *.pyc
 
 # Built by bin/build_cv.py during deploy
-assets/pdf/David_Setiadhi_CV.pdf
+public/assets/pdf/David_Setiadhi_CV.pdf
 
 # Local tooling
 .claude/
-_site/
-.jekyll-cache/
+.venv/
+.jekyll-cache

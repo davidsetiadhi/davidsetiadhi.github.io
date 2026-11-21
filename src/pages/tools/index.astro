@@ -1,0 +1,33 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import PageHead from '../../components/PageHead.astro';
+
+const tools = Object.fromEntries((await getCollection('tools')).map((t) => [t.id, t]));
+const groups = [
+  { title: 'Ozone and sterilization', ids: ['ozone-ct', 'ozone-decay', 'ozone-buildup'] },
+  { title: 'Mechanisms and structures', ids: ['hydraulic-cylinder', 'tipping', 'beam-deflection', 'bolt-torque'] },
+  { title: 'Heat transfer', ids: ['wall-heat'] },
+];
+const listed = new Set(groups.flatMap((g) => g.ids));
+const other = Object.keys(tools).filter((id) => !listed.has(id));
+if (other.length) groups.push({ title: 'More', ids: other });
+---
+<Base title="Engineering tools" description="Small calculators for ozone sterilization, mechanism design, and heat transfer. Formulas and limits are shown on every page." image="/assets/img/og/ozone-chamber.png">
+  <PageHead title="Engineering tools" lead="The quick checks I use in my own research and design work. Each page shows the formula, its limits and where it comes from, and everything runs in your browser." />
+  <div class="page-body">
+    <div class="wrap prose">
+      {groups.map((g) => (
+        <>
+          <h2>{g.title}</h2>
+          <ul class="tool-index">
+            {g.ids.filter((id) => tools[id]).map((id) => (
+              <li><a href={`/tools/${id}/`}>{tools[id].data.title}</a>{tools[id].data.description && <p>{tools[id].data.description}</p>}</li>
+            ))}
+          </ul>
+        </>
+      ))}
+      <p>Found an error, or want another calculator in my field? <span class="email-protect" data-label="Email me">Email me</span>.</p>
+    </div>
+  </div>
+</Base>

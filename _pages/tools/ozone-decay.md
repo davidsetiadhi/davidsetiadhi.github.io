@@ -9,7 +9,7 @@ og_image: /assets/img/og/ozone-chamber.png
 After the exposure phase, ozone has to fall to a safe level before a chamber can be opened. Inside a closed chamber ozone decays roughly first order, and a ventilation fan or catalytic destructor adds a second first-order removal term.
 
 <figure class="tool-figure">
-{% include figure.liquid path="assets/img/tools/ozone-decay.svg" class="img-fluid rounded" alt="Sealed ozone chamber with natural decay and a destructor loop" %}
+<img src="/assets/img/tools/ozone-decay.svg" class="img-fluid rounded" alt="Sealed ozone chamber with natural decay and a destructor loop" loading="lazy">
 <figcaption class="fig-caption"><strong>Figure 1.</strong> Sealed chamber after the exposure phase. Ozone decays to oxygen with half-life <em>t</em><sub>1/2</sub> (min), and a destructor or vent removes it at ACH air changes per hour. The door may open when the concentration <em>C</em> falls to the door-opening level <em>C</em><sub>s</sub> (ppm). Both removal paths act at the same time, so their rate constants add.</figcaption>
 </figure>
 
@@ -35,5 +35,3 @@ The half-life is not a constant of ozone. It depends on temperature, humidity, a
 - [Ozone sterilization chamber](/projects/1_ozone_chamber/) (my PhD project)
 
 [All engineering tools](/tools/)
-
-<script src="{{ '/assets/js/tools.js' | relative_url }}" defer></script>

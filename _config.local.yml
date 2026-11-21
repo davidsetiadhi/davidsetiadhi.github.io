@@ -1,4 +1,0 @@
-# Local preview only (Windows has no ImageMagick "convert"; CI builds use _config.yml alone).
-# bundle exec jekyll serve --config _config.yml,_config.local.yml
-imagemagick:
-  enabled: false

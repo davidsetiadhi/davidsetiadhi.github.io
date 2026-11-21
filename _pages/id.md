@@ -30,4 +30,4 @@ Saya menyediakan [kalkulator teknik](/tools/) untuk dosis dan peluruhan ozon, uk
 
 #### Kontak
 
-Saya terbuka untuk kerja sama riset ozon dan plasma, studi CFD dan FEM, serta proyek desain mekanisme dan fixture untuk industri. Email: {% al_email_protect_link site.data.contact.email %}. [CV dalam bahasa Inggris (PDF)](/assets/pdf/David_Setiadhi_CV.pdf).
+Saya terbuka untuk kerja sama riset ozon dan plasma, studi CFD dan FEM, serta proyek desain mekanisme dan fixture untuk industri. Email: <span class="email-protect">email (JavaScript)</span>. [CV dalam bahasa Inggris (PDF)](/assets/pdf/David_Setiadhi_CV.pdf).

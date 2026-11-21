@@ -1,0 +1,13 @@
+---
+import { render } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import { fmtDate } from '../lib/data';
+
+interface Props { item: CollectionEntry<'news'> }
+const { item } = Astro.props;
+const { Content } = await render(item);
+---
+<li>
+  <time datetime={item.data.date.toISOString().slice(0, 10)}>{fmtDate(item.data.date)}</time>
+  <div class="news-body"><Content /></div>
+</li>

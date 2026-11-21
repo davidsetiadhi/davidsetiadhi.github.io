@@ -1,0 +1,50 @@
+---
+// Renders _data/cv.yml (RenderCV format). bin/build_cv.py builds the PDF from the same file during deploy.
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import { cv } from '../lib/data';
+
+const sections = Object.entries(cv.cv.sections as Record<string, any[]>);
+const span = (e: any) => {
+  const f = (v: any) => (v == null ? '' : String(v) === 'present' ? 'present' : String(v));
+  return e.start_date ? `${f(e.start_date)} – ${f(e.end_date) || 'present'}` : e.date ? f(e.date) : '';
+};
+---
+<Base title="CV" description="Education, experience and service. The PDF is rebuilt each time the site is published.">
+  <PageHead title="Curriculum vitae" lead="Education, experience and service. The PDF is rebuilt each time the site is published, so it always matches this page and the publication list.">
+    <div class="actions" style="margin-top:20px"><a class="btn btn-solid" href="/assets/pdf/David_Setiadhi_CV.pdf" download>Download PDF</a><a class="btn btn-line" href="/publications/">Publications</a></div>
+  </PageHead>
+  <div class="page-body">
+    <div class="wrap">
+      {sections.map(([name, items]) => (
+        <section class="cv-section" style="padding:0" aria-labelledby={`cv-${name}`}>
+          <h2 id={`cv-${name}`}>{name}</h2>
+          {items[0]?.bullet !== undefined ? (
+            <ul class="list prose wide" style="padding-left:0">
+              {items.map((i) => <li style="list-style:none">{i.bullet}</li>)}
+            </ul>
+          ) : items[0]?.label !== undefined ? (
+            <div>
+              {items.map((i) => (
+                <div class="cv-entry"><span class="when">{i.label}</span><p>{i.details}</p></div>
+              ))}
+            </div>
+          ) : (
+            <div style="border-top:2px solid var(--navy)">
+              {items.map((e) => (
+                <div class="cv-entry">
+                  <span class="when">{span(e)}</span>
+                  <div>
+                    <h3>{e.degree ? `${e.degree}, ${e.area}` : e.position}</h3>
+                    <p>{e.institution ?? e.company}{e.location ? `, ${e.location}` : ''}</p>
+                    {e.highlights?.length > 0 && <ul>{e.highlights.map((h: string) => <li>{h}</li>)}</ul>}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
+      ))}
+    </div>
+  </div>
+</Base>

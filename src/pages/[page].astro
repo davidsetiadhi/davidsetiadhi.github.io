@@ -1,0 +1,17 @@
+---
+// Markdown pages kept as content: /id/ (Bahasa Indonesia) and /talks/.
+import { getCollection, render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+
+export async function getStaticPaths() {
+  return (await getCollection('pages')).map((p) => ({ params: { page: p.id }, props: { p } }));
+}
+const { p } = Astro.props;
+const { Content } = await render(p);
+const title = p.data.title.charAt(0).toUpperCase() + p.data.title.slice(1);
+---
+<Base title={title} description={p.data.description} image={p.data.og_image}>
+  <PageHead title={title} lead={p.data.description} />
+  <div class="page-body"><div class="wrap"><article class="prose" lang={p.id === 'id' ? 'id' : undefined}><Content /></article></div></div>
+</Base>

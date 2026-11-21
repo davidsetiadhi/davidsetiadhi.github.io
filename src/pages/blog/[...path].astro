@@ -1,0 +1,24 @@
+---
+// Archive pages kept from the Jekyll site: /blog/YYYY/, /blog/category/<name>/, /blog/tag/<name>/
+import Base from '../../layouts/Base.astro';
+import PageHead from '../../components/PageHead.astro';
+import PostList from '../../components/PostList.astro';
+import { allPosts, slugify, type Post } from '../../lib/posts';
+
+export async function getStaticPaths() {
+  const posts = await allPosts();
+  const paths: { params: { path: string }; props: { title: string; posts: Post[] } }[] = [];
+  const add = (path: string, title: string, list: Post[]) => paths.push({ params: { path }, props: { title, posts: list } });
+  for (const y of new Set(posts.map((p) => p.year))) add(y, `Posts from ${y}`, posts.filter((p) => p.year === y));
+  for (const c of new Set(posts.flatMap((p) => p.data.categories)))
+    add(`category/${slugify(c)}`, `Category: ${c}`, posts.filter((p) => p.data.categories.includes(c)));
+  for (const t of new Set(posts.flatMap((p) => p.data.tags)))
+    add(`tag/${slugify(t)}`, `Tag: ${t}`, posts.filter((p) => p.data.tags.includes(t)));
+  return paths;
+}
+const { title, posts } = Astro.props;
+---
+<Base title={title}>
+  <PageHead title={title} crumb={{ href: '/posts/', label: 'Blog' }} />
+  <div class="page-body"><div class="wrap"><PostList posts={posts} /></div></div>
+</Base>

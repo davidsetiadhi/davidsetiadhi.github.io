@@ -9,7 +9,7 @@ thumbnail: assets/img/illustrations/phd-last-year.svg
 og_image: /assets/img/og/phd-last-year.png
 ---
 
-{% include figure.liquid path="assets/img/illustrations/phd-last-year.svg" class="img-fluid rounded" alt="Roadmap from model to CFD to experiment to defense" %}
+<img src="/assets/img/illustrations/phd-last-year.svg" class="img-fluid rounded" alt="Roadmap from model to CFD to experiment to defense" loading="lazy">
 
 DRAFT, written from my CV. Edit it in my own words before publishing.
 

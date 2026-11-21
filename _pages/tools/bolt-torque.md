@@ -9,7 +9,7 @@ og_image: /assets/img/og/scissor-lift.png
 The torque that brings a metric bolt to a chosen share of its proof load, using the short-form torque relation.
 
 <figure class="tool-figure">
-{% include figure.liquid path="assets/img/tools/bolt-torque.svg" class="img-fluid rounded" alt="Section of a bolted joint with preload, torque and shank diameter" %}
+<img src="/assets/img/tools/bolt-torque.svg" class="img-fluid rounded" alt="Section of a bolted joint with preload, torque and shank diameter" loading="lazy">
 <figcaption class="fig-caption"><strong>Figure 1.</strong> Section of a bolted joint. The tightening torque <em>T</em> (N·m) on the nut stretches the bolt of nominal diameter <em>d</em> (mm) and produces the preload <em>F</em><sub>i</sub> (kN) that clamps the plates. Most of the torque goes into thread and nut-face friction, lumped into the nut factor <em>K</em>, so any scatter in <em>K</em> becomes scatter in <em>F</em><sub>i</sub>.</figcaption>
 </figure>
 
@@ -31,5 +31,3 @@ The nut factor scatters by ±25% or more with surface finish and lubrication, so
 - Budynas, Nisbett, _Shigley's Mechanical Engineering Design_, McGraw-Hill, chapter on screws and fasteners.
 
 [All engineering tools](/tools/)
-
-<script src="{{ '/assets/js/tools.js' | relative_url }}" defer></script>

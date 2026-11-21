@@ -1,0 +1,18 @@
+---
+// Small line icons drawn for the site (24-unit grid, stroke follows the text colour).
+interface Props { name: 'ozone' | 'fem' | 'mechanism' | 'research' | 'industry'; size?: number; class?: string }
+const { name, size = 24, class: cls } = Astro.props;
+const paths: Record<Props['name'], string> = {
+  // O3 molecule: three atoms in a bent chain, with two flow strokes
+  ozone: '<circle cx="6" cy="15" r="3"/><circle cx="12" cy="8" r="3"/><circle cx="18" cy="15" r="3"/><path d="M8 12.6 10 10.3M14 10.3l2 2.3M3 21h7M14 21h7"/>',
+  // finite element mesh: a plate split into triangles
+  fem: '<path d="M3 4h18v16H3z"/><path d="M3 12h18M12 4v16M3 4l9 8M12 12l9-8M3 20l9-8M12 12l9 8"/>',
+  // scissor lift: platform, two crossed stages, base with wheels
+  mechanism: '<path d="M3 4h18M4 17h16M6 4l12 6.5M18 4 6 10.5M6 10.5 18 17M18 10.5 6 17"/><circle cx="7" cy="20" r="1.5"/><circle cx="17" cy="20" r="1.5"/>',
+  // flask
+  research: '<path d="M9 3h6M10 3v6l-5.4 9.3A1.8 1.8 0 0 0 6.2 21h11.6a1.8 1.8 0 0 0 1.6-2.7L14 9V3M7.5 15h9"/>',
+  // factory
+  industry: '<path d="M3 21V10l6 4v-4l6 4V5h5v16zM3 21h18M7 17h2M11 17h2M16 17h1"/>',
+};
+---
+<svg class={cls} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={paths[name]} />

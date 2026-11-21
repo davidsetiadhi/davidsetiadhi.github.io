@@ -1,0 +1,29 @@
+---
+import type { Pub } from '../lib/bib';
+import { isOwnName } from '../lib/bib';
+
+interface Props { pub: Pub; full?: boolean }
+const { pub, full = false } = Astro.props;
+const authors = pub.authors.length > 8 ? [...pub.authors.slice(0, 7), 'et al.'] : pub.authors;
+---
+<li class={full ? "pub-full" : undefined} data-search={`${pub.title} ${pub.authors.join(' ')} ${pub.venue} ${pub.year}`.toLowerCase()}>
+  {!full && <span class="yr">{pub.year || ''}</span>}
+  <div>
+    {pub.url ? <a class="t" href={pub.url}>{pub.title}</a> : <span class="t">{pub.title}</span>}
+    {full && (
+      <span class="au">
+        {authors.map((a, i) => (
+          <>{isOwnName(a) ? <b>{a}</b> : a}{i < authors.length - 1 ? ', ' : ''}</>
+        ))}
+      </span>
+    )}
+    <span class="v">{pub.abbr && <span class="chip">{pub.abbr}</span>}{pub.venue}{full && pub.volume ? `, ${pub.volume}` : ''}{full && pub.pages ? `, ${pub.pages}` : ''}</span>
+    {full && (
+      <div class="pub-links">
+        {pub.doi && <a href={`https://doi.org/${pub.doi}`}>DOI</a>}
+        {pub.pdf && <a href={pub.pdf}>PDF</a>}
+        <details><summary>BibTeX</summary><pre>{pub.bibtex}</pre></details>
+      </div>
+    )}
+  </div>
+</li>

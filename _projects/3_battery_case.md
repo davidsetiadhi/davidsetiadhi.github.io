@@ -8,7 +8,7 @@ img: assets/img/illustrations/battery-case.svg
 og_image: /assets/img/og/battery-case.png
 ---
 
-{% include figure.liquid path="assets/img/illustrations/battery-case.svg" class="img-fluid rounded" alt="Illustration: battery case" %}
+<img src="/assets/img/illustrations/battery-case.svg" class="img-fluid rounded" alt="Illustration: battery case" loading="lazy">
 
 Battery pack cases for electric vehicles must protect the cells and manage heat. This TÜBİTAK 1501 funded study compared sheet metal and sheet molding compound (SMC) cases:
 

@@ -1,0 +1,12 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import PageHead from '../../components/PageHead.astro';
+import NewsItem from '../../components/NewsItem.astro';
+
+const news = (await getCollection('news')).sort((a, b) => +b.data.date - +a.data.date);
+---
+<Base title="News" description="Papers, talks, memberships and other updates.">
+  <PageHead title="News" lead="Papers, talks, memberships and other updates. New papers are added automatically every week." />
+  <div class="page-body"><div class="wrap"><ul class="news prose wide">{news.map((n) => <NewsItem item={n} />)}</ul></div></div>
+</Base>

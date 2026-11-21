@@ -1,0 +1,16 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import PageHead from '../../components/PageHead.astro';
+
+export async function getStaticPaths() {
+  return (await getCollection('tools')).map((t) => ({ params: { slug: t.id }, props: { t } }));
+}
+const { t } = Astro.props;
+const { Content } = await render(t);
+---
+<Base title={t.data.title} description={t.data.description} image={t.data.og_image}>
+  <PageHead title={t.data.title} lead={t.data.description} crumb={{ href: '/tools/', label: 'Engineering tools' }} />
+  <div class="page-body"><div class="wrap"><article class="prose"><Content /></article></div></div>
+  <script is:inline src="/assets/js/tools.js" defer></script>
+</Base>

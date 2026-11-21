@@ -1,0 +1,17 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import PageHead from '../../components/PageHead.astro';
+
+export async function getStaticPaths() {
+  return (await getCollection('projects')).map((p) => ({ params: { slug: p.id }, props: { p } }));
+}
+const { p } = Astro.props;
+const { Content } = await render(p);
+---
+<Base title={p.data.title} description={p.data.description} image={p.data.og_image} type="article">
+  <PageHead title={p.data.title} lead={p.data.description} crumb={{ href: '/projects/', label: 'Research' }} />
+  <div class="page-body">
+    <div class="wrap"><article class="prose"><Content /></article></div>
+  </div>
+</Base>

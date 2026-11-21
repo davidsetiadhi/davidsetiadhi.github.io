@@ -8,7 +8,7 @@ img: assets/img/illustrations/coatings-ballistics.svg
 og_image: /assets/img/og/coatings-ballistics.png
 ---
 
-{% include figure.liquid path="assets/img/illustrations/coatings-ballistics.svg" class="img-fluid rounded" alt="Illustration: coatings ballistics" %}
+<img src="/assets/img/illustrations/coatings-ballistics.svg" class="img-fluid rounded" alt="Illustration: coatings ballistics" loading="lazy">
 
 Finite element work from my years at Universitas Muhammadiyah Surakarta, with Prof. Tri Widodo Besar Riyadi:
 

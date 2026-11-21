@@ -9,7 +9,7 @@ og_image: /assets/img/og/scissor-lift.png
 Maximum deflection, bending moment, and bending stress for the four load cases that cover most quick checks of frames, fixtures, and brackets.
 
 <figure class="tool-figure">
-{% include figure.liquid path="assets/img/tools/beam-deflection.svg" class="img-fluid rounded" alt="Four beam load cases and three cross-sections" %}
+<img src="/assets/img/tools/beam-deflection.svg" class="img-fluid rounded" alt="Four beam load cases and three cross-sections" loading="lazy">
 <figcaption class="fig-caption"><strong>Figure 1.</strong> The four load cases (a–d), each with span <em>L</em> (mm), point load <em>P</em> (N) or uniform load <em>w</em> (N/mm), and maximum deflection <em>δ</em> (mm; dashed shapes exaggerated), and the three cross-sections (e) with dimensions <em>b</em> and <em>h</em> (mm). The simply supported beams deflect most at midspan, and the cantilevers at the free end.</figcaption>
 </figure>
 
@@ -35,5 +35,3 @@ Linear elastic, small deflection, and slender beams only. Shear deflection, loca
 - [Double scissor-lift for Bosch TS5 lines](/projects/2_scissor_lift/)
 
 [All engineering tools](/tools/)
-
-<script src="{{ '/assets/js/tools.js' | relative_url }}" defer></script>
