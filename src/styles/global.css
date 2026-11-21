@@ -20,8 +20,8 @@
   --flow-a: rgba(242, 169, 0, 0.8);
   --flow-b: rgba(23, 73, 188, 0.35);
   --flow-line: rgba(6, 31, 62, 0.12);
-  --display: 'Archivo', 'Segoe UI', system-ui, sans-serif;
-  --body: 'Source Serif 4', Georgia, serif;
+  --display: 'Archivo Variable', 'Segoe UI', system-ui, sans-serif;
+  --body: 'Source Serif 4 Variable', Georgia, serif;
   --wrap: 1120px;
   --measure: 720px;
   color-scheme: light;
