@@ -1,0 +1,52 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import { SITE, people, initials } from '../lib/data';
+---
+<Base title="People" description="Davestia Lab is run by David Setiadhi. The people below are the ones the work is done with.">
+  <PageHead title="People" lead="Davestia Lab is run by David Setiadhi. These are the people the work is done with." />
+  <div class="page-body">
+    <div class="wrap two">
+      <div>
+        <div class="person">
+          <img src="/assets/img/prof_pic.jpg" alt="David Setiadhi" width="96" height="96" />
+          <div>
+            <h3>David Setiadhi</h3>
+            <span class="role">Lead. PhD candidate, Bursa Uludağ University. R&amp;D Engineer, Mertay Makina</span>
+            <p>Mechanical engineer working on CFD, mathematical modeling and experiments for ozone sterilization, and on the design and validation of industrial mechanisms. B.Eng. and M.Eng. from Universitas Muhammadiyah Surakarta, where he also worked as a research and teaching assistant in finite element analysis.</p>
+            <p class="meta" style="margin-top:8px"><span class="email-protect" data-label="Email">Email</span> · <a href={`https://orcid.org/${SITE.orcid}`}>ORCID</a> · <a href="/cv/">CV</a></p>
+          </div>
+        </div>
+        <div class="person">
+          <div class="ph" aria-hidden="true">KÇ</div>
+          <div>
+            <h3>Prof. Dr. Kadir Çavdar</h3>
+            <span class="role">Doctoral supervisor, Bursa Uludağ University</span>
+            <p>Supervisor of the dissertation on gas-phase ozone transport in a closed recirculating sterilization chamber, and co-author of the 2026 review in <em>Journal of Physics D: Applied Physics</em>.</p>
+          </div>
+        </div>
+        {[['Team', people.team], ['Collaborators', people.collaborators]].map(([label, list]) => (
+          <>
+            <h2 class="people-group">{label}</h2>
+            {(list as typeof people.team).map((c) => (
+              <div class="person">
+                {c.photo ? <img src={c.photo} alt={c.name} width="96" height="96" loading="lazy" /> : <div class="ph" aria-hidden="true">{initials(c.name)}</div>}
+                <div>
+                  <h3>{c.name}</h3>
+                  {c.affiliations.map((a) => <span class="role">{a}</span>)}
+                  {c.orcid && <p class="meta" style="margin-top:8px"><a href={`https://orcid.org/${c.orcid}`}>ORCID {c.orcid}</a></p>}
+                </div>
+              </div>
+            ))}
+          </>
+        ))}
+      </div>
+      <div class="prose">
+        <h2 style="margin-top:0">About the name</h2>
+        <p>Davestia combines parts of David and Setiadhi into one word that is easy to say and spell in any language. It is a name for the research, not a separate institution: affiliations on papers are always the university and the company where the work is done.</p>
+        <h2>Working together</h2>
+        <p>I welcome joint research on ozone and plasma technology, CFD and FEM studies, and industry projects in mechanism and fixture design. <span class="email-protect" data-label="Send an email">Send an email</span>.</p>
+      </div>
+    </div>
+  </div>
+</Base>

@@ -1,0 +1,27 @@
+# People shown on /people/: `team` works with David directly, `collaborators` are researchers at other
+# institutions he publishes with. Emails are deliberately left out: link ORCID only.
+# To add a photo, put a square image (at least 300 x 300 px) in public/assets/img/people/
+# and set `photo: /assets/img/people/<file>`. Without a photo the initials are shown.
+team:
+  - name: Wan Hafizh Zulfikar
+    affiliations:
+      - Department of Environmental Engineering, Bursa Uludağ University, Türkiye
+    orcid: 0009-0001-6897-2215
+  - name: Fatih Rahman Hermawan
+    affiliations:
+      - Department of Computer Engineering, Bursa Technical University, Türkiye
+    orcid: 0009-0003-7255-1610
+  - name: Fahmi Faqih Montoya
+    affiliations:
+      - Department of International Trade and Logistics, Bursa Technical University, Türkiye
+    orcid: 0009-0008-4266-3415
+collaborators:
+  - name: Apri Wiyono
+    affiliations:
+      - Fırat University, Elazığ, Türkiye
+      - Faculty of Technology and Vocational Education, Universitas Pendidikan Indonesia, Bandung, Indonesia
+    orcid: 0000-0002-8472-8917
+  - name: Apri Rahmadi
+    affiliations:
+      - Department of Mechanical Engineering, Universitas Muhammadiyah Pontianak, Indonesia
+    orcid: 0000-0001-6372-7184

@@ -1,0 +1,27 @@
+---
+import { render } from 'astro:content';
+import Base from '../../../layouts/Base.astro';
+import PageHead from '../../../components/PageHead.astro';
+import { allPosts, slugify } from '../../../lib/posts';
+import { fmtDate, SITE } from '../../../lib/data';
+
+export async function getStaticPaths() {
+  return (await allPosts()).map((p) => ({ params: { year: p.year, slug: p.slug }, props: { p } }));
+}
+const { p } = Astro.props;
+const { Content } = await render(p);
+const schema = [{
+  '@context': 'https://schema.org', '@type': 'BlogPosting', headline: p.data.title, datePublished: p.date.toISOString(),
+  author: { '@type': 'Person', name: SITE.author }, description: p.data.description,
+}];
+---
+<Base title={p.data.title} description={p.data.description} image={p.data.og_image} type="article" schema={schema}>
+  <PageHead title={p.data.title} lead={p.data.description} crumb={{ href: '/posts/', label: 'Blog' }}>
+    <p class="meta" style="margin-top:14px">
+      <time datetime={p.date.toISOString().slice(0, 10)}>{fmtDate(p.date, { day: 'numeric', month: 'long', year: 'numeric' })}</time>
+      {p.data.categories.map((c) => <> · <a href={`/blog/category/${slugify(c)}/`}>{c}</a></>)}
+      {p.data.tags.map((t) => <> · <a href={`/blog/tag/${slugify(t)}/`}>#{t}</a></>)}
+    </p>
+  </PageHead>
+  <div class="page-body"><div class="wrap"><article class="prose"><Content /></article></div></div>
+</Base>

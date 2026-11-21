@@ -1,0 +1,31 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import PageHead from '../../components/PageHead.astro';
+
+const all = (await getCollection('projects')).sort((a, b) => a.data.importance - b.data.importance);
+const groups = ['research', 'industry'].map((c) => ({ c, items: all.filter((p) => p.data.category === c) }));
+---
+<Base title="Research" description="Research and industry projects, with the papers behind them.">
+  <PageHead title="Research" lead="Research and industry projects, with the papers behind them." />
+  <div class="page-body">
+    <div class="wrap">
+      {groups.map(({ c, items }) => (
+        <>
+          <h2 class="cat-title" id={c}>{c}</h2>
+          <ul class="list">
+            {items.map((p) => (
+              <li class="proj">
+                {p.data.img ? <a href={`/projects/${p.id}/`} tabindex="-1" aria-hidden="true"><img src={`/${p.data.img.replace(/^\//, '')}`} alt="" width="220" height="138" loading="lazy" /></a> : <span />}
+                <div>
+                  <h3><a href={`/projects/${p.id}/`}>{p.data.title}</a></h3>
+                  {p.data.description && <p>{p.data.description}</p>}
+                </div>
+              </li>
+            ))}
+          </ul>
+        </>
+      ))}
+    </div>
+  </div>
+</Base>

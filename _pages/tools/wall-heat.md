@@ -9,7 +9,7 @@ og_image: /assets/img/og/battery-case.png
 Steady one-dimensional heat flow through a wall of up to two layers with convection on both sides, such as an enclosure panel with insulation or a battery case wall.
 
 <figure class="tool-figure">
-{% include figure.liquid path="assets/img/tools/wall-heat.svg" class="img-fluid rounded" alt="Two-layer wall with convection on both sides, its temperature profile and resistance network" %}
+<img src="/assets/img/tools/wall-heat.svg" class="img-fluid rounded" alt="Two-layer wall with convection on both sides, its temperature profile and resistance network" loading="lazy">
 <figcaption class="fig-caption"><strong>Figure 1.</strong> Two-layer wall between an inside and an outside fluid. Heat flows at <em>q</em> (W/m²) from the inside fluid at <em>T</em><sub>i</sub> (°C) through the convection film <em>h</em><sub>i</sub> (W/(m²·K)), layer 1 of thickness <em>L</em><sub>1</sub> (mm) and conductivity <em>k</em><sub>1</sub> (W/(m·K)), layer 2 (<em>L</em><sub>2</sub>, <em>k</em><sub>2</sub>), and the outside film <em>h</em><sub>o</sub> to the outside fluid at <em>T</em><sub>o</sub>. <em>T</em><sub>s,i</sub> and <em>T</em><sub>s,o</sub> are the surface temperatures. The four resistances add in series, as the network below the wall shows, and the largest temperature drop sits across the largest resistance.</figcaption>
 </figure>
 
@@ -35,5 +35,3 @@ Steady state, flat wall, no radiation term, no contact resistance between layers
 - Setiadhi et al. (2024), Comparative FEM Study of Thermal Behavior in Sheet Metal and SMC Battery Pack Cases for EVs, _Journal of the Chinese Society of Mechanical Engineers_.
 
 [All engineering tools](/tools/)
-
-<script src="{{ '/assets/js/tools.js' | relative_url }}" defer></script>

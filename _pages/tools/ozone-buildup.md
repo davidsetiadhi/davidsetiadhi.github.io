@@ -9,7 +9,7 @@ og_image: /assets/img/og/ozone-chamber.png
 How high can a given ozone generator push the concentration in a closed chamber, and how long does it take? Treating the chamber as one well-mixed volume with first-order decay gives a quick first answer.
 
 <figure class="tool-figure">
-{% include figure.liquid path="assets/img/tools/ozone-buildup.svg" class="img-fluid rounded" alt="Ozone generator feeding a well-mixed chamber with first-order decay" %}
+<img src="/assets/img/tools/ozone-buildup.svg" class="img-fluid rounded" alt="Ozone generator feeding a well-mixed chamber with first-order decay" loading="lazy">
 <figcaption class="fig-caption"><strong>Figure 1.</strong> Ozone generator with output <em>Ġ</em> (g/h) feeding a well-mixed chamber of volume <em>V</em> (L). The concentration <em>C</em>(<em>t</em>) rises until generation balances first-order decay, <em>kVC</em>, where <em>k</em> = ln 2 / <em>t</em><sub>1/2</sub>.</figcaption>
 </figure>
 
@@ -35,5 +35,3 @@ Real chambers are not well mixed. Corners, packed instrument trays, and the gene
 - [Ozone sterilization chamber](/projects/1_ozone_chamber/) (my PhD project)
 
 [All engineering tools](/tools/)
-
-<script src="{{ '/assets/js/tools.js' | relative_url }}" defer></script>

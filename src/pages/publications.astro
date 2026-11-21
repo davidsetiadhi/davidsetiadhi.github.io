@@ -1,0 +1,50 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import PubItem from '../components/PubItem.astro';
+import { publications } from '../lib/bib';
+import { metrics, fmtDate, SITE } from '../lib/data';
+
+const pubs = publications();
+const years = [...new Set(pubs.map((p) => p.year))].sort((a, b) => b - a);
+---
+<Base title="Publications" description="Peer-reviewed articles and conference papers. Updated automatically every week from ORCID.">
+  <PageHead title="Publications" lead="Peer-reviewed articles and conference papers, newest first. The list updates automatically every week from my ORCID record." />
+  <div class="page-body">
+    <div class="wrap">
+      <div class="metrics" aria-label="Research metrics">
+        <div><b>{metrics.works}</b><span>indexed works</span></div>
+        <div><b>{metrics.citations}</b><span>citations</span></div>
+        <div><b>{metrics.h_index}</b><span>h-index</span></div>
+        <div><b>{metrics.i10_index}</b><span>i10-index</span></div>
+      </div>
+      <p class="meta" style="margin-bottom:32px">Source: <a href={metrics.openalex_url}>OpenAlex</a>, updated {fmtDate(new Date(metrics.updated), { day: 'numeric', month: 'long', year: 'numeric' })}. Also on <a href={`https://orcid.org/${SITE.orcid}`}>ORCID</a>.</p>
+      <label class="sr-only" for="pub-search">Search publications</label>
+      <input id="pub-search" class="pub-search" type="search" placeholder="Search title, author, venue or year" autocomplete="off" />
+      <p class="meta" id="pub-none" hidden>No publication matches that search.</p>
+      {years.map((y) => (
+        <div class="pub-year" data-year={y}>
+          <h2 class="year-head">{y || 'Undated'}</h2>
+          <ol class="pubs">{pubs.filter((p) => p.year === y).map((p) => <PubItem pub={p} full />)}</ol>
+        </div>
+      ))}
+    </div>
+  </div>
+  <script is:inline>
+    (function () {
+      var input = document.getElementById('pub-search'), none = document.getElementById('pub-none');
+      input.addEventListener('input', function () {
+        var q = input.value.trim().toLowerCase(), any = false;
+        document.querySelectorAll('.pub-year').forEach(function (g) {
+          var shown = 0;
+          g.querySelectorAll('li[data-search]').forEach(function (li) {
+            var hit = !q || li.dataset.search.indexOf(q) > -1;
+            li.hidden = !hit; if (hit) shown++;
+          });
+          g.hidden = shown === 0; if (shown) any = true;
+        });
+        none.hidden = any;
+      });
+    })();
+  </script>
+</Base>

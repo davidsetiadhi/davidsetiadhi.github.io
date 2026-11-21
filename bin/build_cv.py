@@ -27,7 +27,7 @@ ROOT = Path(__file__).resolve().parent.parent
 CV = ROOT / "_data" / "cv.yml"
 CONTACT = ROOT / "_data" / "contact.yml"
 BIB = ROOT / "_bibliography" / "papers.bib"
-OUT = ROOT / "assets" / "pdf" / "David_Setiadhi_CV.pdf"
+OUT = ROOT / "public" / "assets" / "pdf" / "David_Setiadhi_CV.pdf"
 
 MONTHS = {m: i for i, m in enumerate("jan feb mar apr may jun jul aug sep oct nov dec".split(), start=1)}
 JOURNAL_TYPES = {"article"}

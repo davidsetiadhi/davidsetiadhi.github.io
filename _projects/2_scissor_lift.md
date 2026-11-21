@@ -8,7 +8,7 @@ img: assets/img/illustrations/scissor-lift.svg
 og_image: /assets/img/og/scissor-lift.png
 ---
 
-{% include figure.liquid path="assets/img/illustrations/scissor-lift.svg" class="img-fluid rounded" alt="Illustration: scissor lift" %}
+<img src="/assets/img/illustrations/scissor-lift.svg" class="img-fluid rounded" alt="Illustration: scissor lift" loading="lazy">
 
 A conveyor-integrated double scissor-lift mechanism developed at Mertay Makina for Bosch TS5 assembly lines. I led the development from concept to fabrication:
 

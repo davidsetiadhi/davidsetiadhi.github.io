@@ -1,0 +1,12 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+---
+<Base title="Page not found" noindex>
+  <PageHead title="Page not found" lead="This address does not exist, or the page has moved when the site was rebuilt." />
+  <div class="page-body">
+    <div class="wrap prose">
+      <p>Try the <a href="/">home page</a>, <a href="/projects/">research</a>, <a href="/publications/">publications</a> or <a href="/tools/">engineering tools</a>.</p>
+    </div>
+  </div>
+</Base>

@@ -1,6 +1,6 @@
 """Generate the schematic figures for the engineering tool pages.
 
-Writes one SVG per calculator to assets/img/tools/<slug>.svg. Symbols match the
+Writes one SVG per calculator to public/assets/img/tools/<slug>.svg. Symbols match the
 formulas on each page (_pages/tools/<slug>.md). Run from the repo root:
 
     python bin/make_tool_figures.py
@@ -8,7 +8,7 @@ formulas on each page (_pages/tools/<slug>.md). Run from the repo root:
 import math
 import os
 
-OUT = os.path.join(os.path.dirname(__file__), "..", "assets", "img", "tools")
+OUT = os.path.join(os.path.dirname(__file__), "..", "public", "assets", "img", "tools")
 INK, TEAL, ORANGE, GREY, LIGHT, PALE, FILL = "#1f2937", "#0f766e", "#c2410c", "#6b7280", "#e6f2f0", "#f3f4f6", "#d1d5db"
 SANS = "Arial, Helvetica, sans-serif"
 SERIF = "Georgia, 'Times New Roman', serif"

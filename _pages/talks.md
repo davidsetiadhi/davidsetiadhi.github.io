@@ -10,7 +10,7 @@ og_image: /assets/img/og/talk-iprc-plasma.png
 
 <div class="row mb-4 align-items-center">
   <div class="col-sm-4 mb-2 mb-sm-0">
-    {% include figure.liquid path="assets/img/illustrations/talk-ums-online.svg" class="img-fluid rounded" alt="Laptop showing an online lecture" %}
+    <img src="/assets/img/illustrations/talk-ums-online.svg" class="img-fluid rounded" alt="Laptop showing an online lecture" loading="lazy">
   </div>
   <div class="col-sm-8">
     <p class="mb-1"><strong>4 and 11 Nov 2026</strong></p>
@@ -21,7 +21,7 @@ og_image: /assets/img/og/talk-iprc-plasma.png
 
 <div class="row mb-4 align-items-center">
   <div class="col-sm-4 mb-2 mb-sm-0">
-    {% include figure.liquid path="assets/img/illustrations/talk-iprc-plasma.svg" class="img-fluid rounded" alt="Speaker at a lectern with a plasma discharge on screen" %}
+    <img src="/assets/img/illustrations/talk-iprc-plasma.svg" class="img-fluid rounded" alt="Speaker at a lectern with a plasma discharge on screen" loading="lazy">
   </div>
   <div class="col-sm-8">
     <p class="mb-1"><strong>16 Apr 2026</strong></p>
@@ -32,7 +32,7 @@ og_image: /assets/img/og/talk-iprc-plasma.png
 
 <div class="row mb-4 align-items-center">
   <div class="col-sm-4 mb-2 mb-sm-0">
-    {% include figure.liquid path="assets/img/illustrations/talk-undip-mou.svg" class="img-fluid rounded" alt="Signed agreement between Turkish and Indonesian flags" %}
+    <img src="/assets/img/illustrations/talk-undip-mou.svg" class="img-fluid rounded" alt="Signed agreement between Turkish and Indonesian flags" loading="lazy">
   </div>
   <div class="col-sm-8">
     <p class="mb-1"><strong>15 Apr 2026</strong></p>

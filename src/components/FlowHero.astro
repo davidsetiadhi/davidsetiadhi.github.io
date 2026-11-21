@@ -1,0 +1,191 @@
+---
+// Home hero background: 2D potential flow past the real D symbol (its two pieces, blade and body),
+// solved in the browser from the same vector paths the logo is drawn with.
+import fs from 'node:fs';
+import path from 'node:path';
+
+// Read the symbol geometry from the published SVG so the flow and the logo can never drift apart.
+const svg = fs.readFileSync(path.resolve(process.env.SITE_ROOT ?? '.', 'public/brand/symbol.svg'), 'utf8');
+const d = svg.match(/<path d="([^"]+)"/)![1];
+const [, tx, ty, sc] = svg.match(/translate\(([-\d.]+) ([-\d.]+)\) scale\(([-\d.]+)\)/)!.map(Number);
+const pieces = d.split(/(?=M)/).filter(Boolean); // [blade, body]
+const geo = { pieces, tx, ty, sc };
+---
+<canvas id="lines" aria-hidden="true"></canvas>
+<canvas id="flow" aria-hidden="true"></canvas>
+<img class="hero-symbol logo-light" src="/brand/symbol.svg" alt="" aria-hidden="true" />
+<img class="hero-symbol logo-dark" src="/brand/symbol-white.svg" alt="" aria-hidden="true" />
+<span class="flow-note">Background: potential flow past the Davestia symbol, computed live in your browser</span>
+<script is:inline define:vars={{ geo }}>
+// Stream function psi on a grid: Laplace(psi) = 0 in the fluid, uniform flow U (right to left) far away,
+// psi constant on each of the two solid pieces. The two constants are chosen so the circulation around
+// each piece is zero (plain potential flow, no lift), by superposing three solves:
+//   psi = psi0 + a*psi1 + b*psi2, with psi0: pieces at 0, psi1/psi2: one piece at 1, outer boundary 0.
+// Velocity u = dpsi/dy, v = -dpsi/dx. Particles are not drawn over the headline text.
+(function () {
+  const hero = document.querySelector('.hero');
+  const lines = document.getElementById('lines'), cv = document.getElementById('flow');
+  const lx = lines.getContext('2d'), ctx = cv.getContext('2d');
+  const syms = document.querySelectorAll('.hero-symbol');
+  const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const css = getComputedStyle(document.documentElement);
+  const U = -1; // U < 0: flow runs right to left
+  const shapes = geo.pieces.map((p) => new Path2D(p));
+  const probe = document.createElement('canvas').getContext('2d');
+  // Artwork extent in the path's own units (from the symbol geometry).
+  const X0 = 6, X1 = 465.5, Y0 = 8, Y1 = 240, XC = (X0 + X1) / 2, YC = (Y0 + Y1) / 2;
+  let W, H, s, cx, cy, h, ox, oy, nx, ny, psi, U_, V_, mask, pts = [], avoid = [];
+
+  function inside(x, y) { // screen point -> 0 fluid, 1 blade, 2 body
+    const px = (x - cx) / s + XC, py = (y - cy) / s + YC;
+    for (let i = 0; i < shapes.length; i++) if (probe.isPointInPath(shapes[i], px, py)) return i + 1;
+    return 0;
+  }
+
+  function solve(field, fixed, outer) { // SOR on fluid nodes; fixed(k) gives the value on solid nodes
+    for (let k = 0; k < nx * ny; k++) if (mask[k]) field[k] = fixed(mask[k]);
+    for (let j = 0; j < ny; j++) for (const i of [0, nx - 1]) field[j * nx + i] = outer(j);
+    for (let i = 0; i < nx; i++) { field[i] = outer(0); field[(ny - 1) * nx + i] = outer(ny - 1); }
+    const w = 2 / (1 + Math.PI / Math.max(nx, ny));
+    for (let it = 0; it < 4 * Math.max(nx, ny); it++) {
+      let dmax = 0;
+      for (let pass = 0; pass < 2; pass++) for (let j = 1; j < ny - 1; j++) {
+        for (let i = 1 + ((j + pass) & 1); i < nx - 1; i += 2) {
+          const k = j * nx + i; if (mask[k]) continue;
+          const r = 0.25 * (field[k - 1] + field[k + 1] + field[k - nx] + field[k + nx]) - field[k];
+          field[k] += w * r; if (Math.abs(r) > dmax) dmax = Math.abs(r);
+        }
+      }
+      if (dmax < 1e-4 * h) break;
+    }
+    return field;
+  }
+
+  function circulation(field, piece, value) { // net flux across the fluid nodes next to one piece
+    let g = 0;
+    for (let j = 1; j < ny - 1; j++) for (let i = 1; i < nx - 1; i++) {
+      const k = j * nx + i; if (mask[k] !== piece) continue;
+      for (const n of [k - 1, k + 1, k - nx, k + nx]) if (!mask[n]) g += field[n] - value;
+    }
+    return g;
+  }
+
+  function build() {
+    const wide = W > 900;
+    const aw = wide ? Math.min(W * 0.3, H * 0.62 * (X1 - X0) / (Y1 - Y0)) : Math.min(W * 0.62, 260);
+    s = aw / (X1 - X0);
+    cx = wide ? W * 0.74 : W * 0.55; cy = wide ? H * 0.5 : H - 120;
+    // The SVG draws the path at translate(tx,ty) scale(sc) inside an 800-unit box.
+    const k = s / geo.sc, iw = 800 * k;
+    syms.forEach((el) => {
+      el.style.width = iw + 'px';
+      el.style.left = (cx - (geo.tx + geo.sc * XC) * k) + 'px';
+      el.style.top = (cy - (geo.ty + geo.sc * YC) * k) + 'px';
+    });
+    // Grid covers the hero plus a margin, so the far-field condition sits away from the symbol.
+    const pad = aw * 0.6;
+    h = Math.max(3, Math.sqrt((W + 2 * pad) * (H + 2 * pad) / 45000));
+    ox = -pad; oy = -pad;
+    nx = Math.ceil((W + 2 * pad) / h) + 1; ny = Math.ceil((H + 2 * pad) / h) + 1;
+    mask = new Uint8Array(nx * ny);
+    const bx0 = cx - aw / 2 - h, bx1 = cx + aw / 2 + h, by0 = cy - (YC - Y0) * s - h, by1 = cy + (Y1 - YC) * s + h;
+    for (let j = 0; j < ny; j++) {
+      const y = oy + j * h; if (y < by0 || y > by1) continue;
+      for (let i = 0; i < nx; i++) { const x = ox + i * h; if (x >= bx0 && x <= bx1) mask[j * nx + i] = inside(x, y); }
+    }
+    const far = (j) => U * (oy + j * h);
+    const p0 = solve(new Float32Array(nx * ny).map((_, q) => U * (oy + Math.floor(q / nx) * h)), () => 0, far);
+    const p1 = solve(new Float32Array(nx * ny), (m) => (m === 1 ? 1 : 0), () => 0);
+    const p2 = solve(new Float32Array(nx * ny), (m) => (m === 2 ? 1 : 0), () => 0);
+    const g10 = circulation(p0, 1, 0), g11 = circulation(p1, 1, 1), g12 = circulation(p2, 1, 0);
+    const g20 = circulation(p0, 2, 0), g21 = circulation(p1, 2, 0), g22 = circulation(p2, 2, 1);
+    const det = g11 * g22 - g12 * g21;
+    const a = (-g10 * g22 + g12 * g20) / det, b = (-g11 * g20 + g21 * g10) / det;
+    psi = new Float32Array(nx * ny);
+    for (let q = 0; q < psi.length; q++) psi[q] = p0[q] + a * p1[q] + b * p2[q];
+    U_ = new Float32Array(nx * ny); V_ = new Float32Array(nx * ny);
+    for (let j = 1; j < ny - 1; j++) for (let i = 1; i < nx - 1; i++) {
+      const q = j * nx + i; if (mask[q]) continue;
+      U_[q] = (psi[q + nx] - psi[q - nx]) / (2 * h);
+      V_[q] = -(psi[q + 1] - psi[q - 1]) / (2 * h);
+    }
+  }
+
+  function vel(x, y) { // bilinear velocity; null inside a piece or off the grid
+    const gx = (x - ox) / h, gy = (y - oy) / h, i = Math.floor(gx), j = Math.floor(gy);
+    if (i < 1 || j < 1 || i >= nx - 2 || j >= ny - 2) return null;
+    const q = j * nx + i, fx = gx - i, fy = gy - j;
+    if (mask[q] || mask[q + 1] || mask[q + nx] || mask[q + nx + 1]) return null;
+    const l = (A) => (A[q] * (1 - fx) + A[q + 1] * fx) * (1 - fy) + (A[q + nx] * (1 - fx) + A[q + nx + 1] * fx) * fy;
+    let u = l(U_), v = l(V_);
+    const sp = Math.hypot(u, v), cap = 2.2 * Math.abs(U); // sharp corners are singular in potential flow
+    if (sp > cap) { u *= cap / sp; v *= cap / sp; }
+    return [u, v];
+  }
+
+  function colour(k) { return css.getPropertyValue(k).trim(); }
+  function drawLines() {
+    lx.clearRect(0, 0, W, H); lx.lineWidth = 1; lx.strokeStyle = colour('--flow-line');
+    const n = Math.max(18, Math.round(H / 18));
+    for (let i = 0; i <= n; i++) {
+      let x = W + 5, y = (i + 0.5) * H / (n + 1); lx.beginPath(); lx.moveTo(x, y);
+      for (let k = 0; k < 5000 && x > -5; k++) {
+        const v = vel(x, y); if (!v) break;
+        const sp = Math.hypot(v[0], v[1]); if (sp < 0.02) break;
+        x += v[0] / sp * 2; y += v[1] / sp * 2; lx.lineTo(x, y);
+      }
+      lx.stroke();
+    }
+  }
+  function textRects() { // headline, lead and buttons, relative to the hero, with a margin
+    const hr = hero.getBoundingClientRect();
+    avoid = [...hero.querySelectorAll('.wrap > *')].map((el) => {
+      const r = el.getBoundingClientRect();
+      return [r.left - hr.left - 16, r.top - hr.top - 12, r.right - hr.left + 16, r.bottom - hr.top + 12];
+    });
+  }
+  const covered = (x, y) => avoid.some((r) => x > r[0] && x < r[2] && y > r[1] && y < r[3]);
+  function seed(p, anywhere) {
+    for (let t = 0; t < 30; t++) {
+      p.x = anywhere ? Math.random() * W : W + Math.random() * 30; p.y = Math.random() * H;
+      if (vel(p.x, p.y)) break;
+    }
+    p.age = 0; p.life = 260 + Math.random() * 360; p.k = Math.random() < 0.6 ? '--flow-a' : '--flow-b';
+    return p;
+  }
+  function tick() {
+    ctx.globalCompositeOperation = 'destination-out'; ctx.fillStyle = 'rgba(0,0,0,0.09)'; ctx.fillRect(0, 0, W, H);
+    ctx.globalCompositeOperation = 'source-over'; ctx.lineWidth = 1.6; ctx.lineCap = 'round';
+    const ca = colour('--flow-a'), cb = colour('--flow-b');
+    for (const p of pts) {
+      const v = vel(p.x, p.y);
+      if (!v || p.x < -10 || p.age > p.life) { seed(p, false); continue; }
+      const nx_ = p.x + v[0] * 1.4, ny_ = p.y + v[1] * 1.4;
+      if (!covered(p.x, p.y)) {
+        ctx.strokeStyle = p.k === '--flow-a' ? ca : cb; ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(nx_, ny_); ctx.stroke();
+      }
+      p.x = nx_; p.y = ny_; p.age++;
+    }
+  }
+  function size() {
+    const dpr = Math.min(devicePixelRatio || 1, 2);
+    W = hero.clientWidth; H = hero.clientHeight;
+    for (const [c, x] of [[lines, lx], [cv, ctx]]) { c.width = W * dpr; c.height = H * dpr; x.setTransform(dpr, 0, 0, dpr, 0, 0); }
+    build(); textRects(); drawLines();
+    pts = Array.from({ length: Math.round(W * H / 1500) }, () => seed({}, true));
+  }
+  function loop() { tick(); requestAnimationFrame(loop); }
+  // The hero's text is parsed after this script, so size the field once layout exists and on every resize.
+  let started = false, timer = 0, lastW = 0, lastH = 0;
+  new ResizeObserver(() => {
+    if (!hero.clientHeight || (hero.clientWidth === lastW && hero.clientHeight === lastH)) return;
+    lastW = hero.clientWidth; lastH = hero.clientHeight;
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      size();
+      if (!started && !still) { started = true; for (let i = 0; i < 120; i++) tick(); requestAnimationFrame(loop); }
+    }, started ? 150 : 0);
+  }).observe(hero);
+  addEventListener('themechange', () => requestAnimationFrame(drawLines));
+})();
+</script>

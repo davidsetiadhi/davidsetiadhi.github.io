@@ -9,7 +9,7 @@ og_image: /assets/img/og/ozone-chamber.png
 Ozone disinfection and sterilization are usually specified as a CT dose: concentration multiplied by contact time. This calculator turns a target dose into an exposure time and converts between volume (ppm) and mass (mg/m³) units at your gas temperature and pressure.
 
 <figure class="tool-figure">
-{% include figure.liquid path="assets/img/tools/ozone-ct.svg" class="img-fluid rounded" alt="Well-mixed ozone chamber with a concentration sensor and a timer" %}
+<img src="/assets/img/tools/ozone-ct.svg" class="img-fluid rounded" alt="Well-mixed ozone chamber with a concentration sensor and a timer" loading="lazy">
 <figcaption class="fig-caption"><strong>Figure 1.</strong> Well-mixed chamber assumed by this calculator. The sensor reads the ozone concentration <em>C</em> (ppm), and the timer measures the exposure time <em>t</em> (min). Because <em>C</em> is taken as uniform, the dose <em>C</em>·<em>t</em> read at the sensor applies to every surface in the load.</figcaption>
 </figure>
 
@@ -37,5 +37,3 @@ The CT a process needs depends on the organism, the relative humidity, the load,
 - [Ozone sterilization chamber](/projects/1_ozone_chamber/) (my PhD project)
 
 [All engineering tools](/tools/)
-
-<script src="{{ '/assets/js/tools.js' | relative_url }}" defer></script>

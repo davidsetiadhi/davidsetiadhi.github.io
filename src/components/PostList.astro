@@ -1,0 +1,26 @@
+---
+import type { Post } from '../lib/posts';
+import { slugify } from '../lib/posts';
+import { fmtDate } from '../lib/data';
+
+interface Props { posts: Post[] }
+const { posts } = Astro.props;
+---
+{posts.length === 0 ? <p>No posts here yet.</p> : (
+  <ul class="list">
+    {posts.map((p) => (
+      <li class="post-item">
+        <div>
+          <h3><a href={p.url}>{p.data.title}</a></h3>
+          {p.data.description && <p>{p.data.description}</p>}
+          <p class="meta">
+            <time datetime={p.date.toISOString().slice(0, 10)}>{fmtDate(p.date, { day: 'numeric', month: 'long', year: 'numeric' })}</time>
+            {p.data.categories.map((c) => <> · <a href={`/blog/category/${slugify(c)}/`}>{c}</a></>)}
+            {p.data.tags.map((t) => <> · <a href={`/blog/tag/${slugify(t)}/`}>#{t}</a></>)}
+          </p>
+        </div>
+        {p.data.thumbnail ? <img src={`/${p.data.thumbnail.replace(/^\//, '')}`} alt="" width="180" height="113" loading="lazy" /> : <span />}
+      </li>
+    ))}
+  </ul>
+)}

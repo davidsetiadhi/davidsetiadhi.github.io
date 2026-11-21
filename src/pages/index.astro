@@ -1,0 +1,130 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import FlowHero from '../components/FlowHero.astro';
+import NewsItem from '../components/NewsItem.astro';
+import PubItem from '../components/PubItem.astro';
+import Icon from '../components/Icon.astro';
+import { publications } from '../lib/bib';
+import { metrics, fmtDate, SITE } from '../lib/data';
+
+const projects = await getCollection('projects');
+const bySlug = Object.fromEntries(projects.map((p) => [p.id, p]));
+const themes = [
+  {
+    title: 'Ozone sterilization and gas transport',
+    icon: 'ozone',
+    text: 'How ozone is generated, carried and decays in a closed chamber, studied with a mathematical model, CFD and experiments on a prototype I built.',
+    slugs: ['1_ozone_chamber'],
+  },
+  {
+    title: 'Thermal and structural FEM',
+    icon: 'fem',
+    text: 'Finite element studies of coatings, armour, induction heating and EV battery cases, from my years at UMS and after.',
+    slugs: ['3_battery_case', '5_coatings_ballistics'],
+  },
+  {
+    title: 'Mechanisms for industrial automation',
+    icon: 'mechanism',
+    text: 'Concept-to-delivery design and validation of lifting mechanisms, fixtures and platforms for automotive and industrial clients.',
+    slugs: ['2_scissor_lift', '4_stair_platform'],
+  },
+];
+const tag = (c: string) => (c === 'industry' ? 'Industry, Mertay Makina' : 'Research');
+const selected = publications().filter((p) => p.selected).slice(0, 4);
+const news = (await getCollection('news')).sort((a, b) => +b.data.date - +a.data.date).slice(0, 4);
+const tools = (await getCollection('tools')).sort((a, b) => a.data.title.localeCompare(b.data.title));
+---
+<Base>
+  <section class="hero" aria-labelledby="hero-title">
+    <FlowHero />
+    <div class="wrap">
+      <h1 id="hero-title">{SITE.tagline}</h1>
+      <p class="lead">{SITE.description}</p>
+      <div class="actions">
+        <a class="btn btn-solid" href="/projects/">See the research</a>
+        <a class="btn btn-line" href="/assets/pdf/David_Setiadhi_CV.pdf">Download CV</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="status">
+    <div class="wrap"><p><strong>Available from January 2027.</strong> PhD defense in mid-December 2026. Open to postdoc, lecturer and R&amp;D engineer roles in Türkiye, Indonesia or abroad. <span class="email-protect" data-label="Get in touch">Get in touch</span></p></div>
+  </div>
+
+  <section id="research">
+    <div class="wrap">
+      <h2>Research</h2>
+      <div class="themes">
+        {themes.map((t) => (
+          <div class="theme">
+            <span class="theme-icon"><Icon name={t.icon as any} size={26} /></span>
+            <h3>{t.title}</h3>
+            <p>{t.text}</p>
+            <ul>
+              {t.slugs.filter((s) => bySlug[s]).map((s) => (
+                <li><a href={`/projects/${s}/`}>{bySlug[s].data.title}</a><span class="tag"><Icon name={bySlug[s].data.category === 'industry' ? 'industry' : 'research'} size={14} />{tag(bySlug[s].data.category)}</span></li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section id="publications" style="padding-top:0">
+    <div class="wrap">
+      <h2>Selected publications</h2>
+      <ol class="pubs">{selected.map((p) => <PubItem pub={p} />)}</ol>
+      <p class="meta" style="margin-top:16px">
+        {metrics.works} indexed works and {metrics.citations} citations on <a href={metrics.openalex_url}>OpenAlex</a> ({fmtDate(new Date(metrics.updated), { day: 'numeric', month: 'short', year: 'numeric' })}).
+        <a href="/publications/">All publications, including conference papers</a>
+      </p>
+    </div>
+  </section>
+
+  <section id="tools" class="band">
+    <div class="wrap grid">
+      <div>
+        <h2>Engineering tools</h2>
+        <p>Calculators with the equations, limits and references written out, so the result can be checked by hand.</p>
+        <a class="btn btn-line" href="/tools/">Open the tools</a>
+      </div>
+      <ul class="tools">
+        {tools.map((t) => <li><a href={`/tools/${t.id}/`}>{t.data.title}</a></li>)}
+      </ul>
+    </div>
+  </section>
+
+  <section id="news">
+    <div class="wrap two">
+      <div>
+        <h2>News</h2>
+        <ul class="news">{news.map((n) => <NewsItem item={n} />)}</ul>
+        <p class="meta" style="margin-top:16px"><a href="/news/">All news</a> · <a href="/talks/">Talks</a></p>
+      </div>
+      <div id="people">
+        <h2>People</h2>
+        <div class="person">
+          <img src="/assets/img/prof_pic.jpg" alt="David Setiadhi" width="96" height="96" />
+          <div><h3>David Setiadhi</h3><span class="role">Lead, PhD candidate</span><p>Mechanical engineer working on CFD, modeling and experiments, with 3.5 years of industrial R&amp;D.</p></div>
+        </div>
+        <div class="person">
+          <div class="ph" aria-hidden="true">KÇ</div>
+          <div><h3>Prof. Dr. Kadir Çavdar</h3><span class="role">Doctoral supervisor, Bursa Uludağ University</span><p>Supervisor of the dissertation on ozone transport.</p></div>
+        </div>
+        <p class="meta" style="margin-top:16px"><a href="/people/">About the lab and its people</a></p>
+      </div>
+    </div>
+  </section>
+
+  <div class="affil">
+    <div class="wrap">
+      <ul>
+        <li>Bursa Uludağ University<span>PhD, Mechanical Engineering</span></li>
+        <li>Mertay Makina<span>R&amp;D Engineer</span></li>
+        <li>Universitas Muhammadiyah Surakarta<span>B.Eng., M.Eng., former research assistant</span></li>
+      </ul>
+    </div>
+  </div>
+</Base>

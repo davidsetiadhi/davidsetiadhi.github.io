@@ -8,7 +8,7 @@ img: assets/img/illustrations/ozone-chamber.svg
 og_image: /assets/img/og/ozone-chamber.png
 ---
 
-{% include figure.liquid path="assets/img/illustrations/ozone-chamber.svg" class="img-fluid rounded" alt="Ozone chamber with a recirculation loop, an ozone generator, and a concentration sensor" %}
+<img src="/assets/img/illustrations/ozone-chamber.svg" class="img-fluid rounded" alt="Ozone chamber with a recirculation loop, an ozone generator, and a concentration sensor" loading="lazy">
 
 Reusable medical devices that cannot tolerate heat need a low-temperature sterilant. Ozone works well and leaves no residue, but whether every surface in a chamber receives enough of it depends on how the gas is generated, carried, and decays.
 

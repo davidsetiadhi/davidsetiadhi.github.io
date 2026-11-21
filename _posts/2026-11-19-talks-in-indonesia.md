@@ -9,7 +9,7 @@ thumbnail: assets/img/illustrations/talks-in-indonesia.svg
 og_image: /assets/img/og/talks-in-indonesia.png
 ---
 
-{% include figure.liquid path="assets/img/illustrations/talks-in-indonesia.svg" class="img-fluid rounded" alt="Illustration: talks in indonesia" %}
+<img src="/assets/img/illustrations/talks-in-indonesia.svg" class="img-fluid rounded" alt="Illustration: talks in indonesia" loading="lazy">
 
 This year I got to talk about my work in Indonesia twice: once in person in Semarang in April, and once online for my old department at UMS in November. Both times I went with my supervisor, Prof. Dr. Kadir Çavdar.
 
