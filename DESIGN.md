@@ -26,6 +26,7 @@ Each research direction has its own hue, used only for its dots and lines on the
 - Headings are weight 700 with tracking from -0.015em to -0.025em. Body text is 17px with line height 1.65, at most 720px wide.
 
 ## Components
+- **macOS controls:** the header is a translucent toolbar with a segmented control for the menu and icon buttons for theme and menu. On narrow screens the menu opens as a popover (click outside or Escape closes it). Buttons are push buttons (radius 8px, hairline shadow). Lists are grouped panels (radius 12px) as in System Settings. Calculators sit in a window with a title bar; select fields are pop-up buttons; the search field is a rounded search field. Focus uses a soft cobalt ring.
 - **Hero:** the photo (4:5, rounded 10px; the 2026 YTB graduation photo) on the right, and on the left the name, a plain lead, the status and the actions.
 - **Research map** (`ResearchMap.astro`): an elliptical radial layout, up to 1360px wide (wider than the text column), with David at the centre, five directions, and projects on the outer ring. Hovering or focusing a direction or a project dims the rest; clicking selects it and fills the panel below the map. Person chips under the map highlight that person's projects. Under 900px the map becomes a list of directions with details, built from the same data. It is fully keyboard operable, and motion is reduced when the visitor asks for it.
 - **Status chips:** published, ongoing, planned. Outlined rather than filled, with the label always written.

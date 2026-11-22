@@ -71,11 +71,18 @@ const person = {
           <img class="logo-light" src="/brand/logo.svg" alt="Davestia Lab" width="153" height="34" />
           <img class="logo-dark" src="/brand/logo-white.svg" alt="Davestia Lab" width="153" height="34" />
         </a>
-        <nav class="nav" id="nav" aria-label="Main">
-          {NAV.map((n) => <a href={n.href} aria-current={path.startsWith(n.href) ? 'page' : undefined}>{n.label}</a>)}
-          <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch light or dark theme">Theme</button>
-        </nav>
-        <button class="menu" type="button" aria-expanded="false" aria-controls="nav" data-menu>Menu</button>
+        <div class="toolbar">
+          <nav class="nav" id="nav" aria-label="Main">
+            {NAV.map((n) => <a href={n.href} aria-current={path.startsWith(n.href) ? 'page' : undefined}>{n.label}</a>)}
+          </nav>
+          <button class="tb-btn theme-toggle" type="button" data-theme-toggle aria-label="Switch light or dark theme" title="Light or dark">
+            <svg class="i-sun" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="3.6" /><path d="M10 1.8v2.2M10 16v2.2M1.8 10h2.2M16 10h2.2M4.2 4.2l1.6 1.6M14.2 14.2l1.6 1.6M4.2 15.8l1.6-1.6M14.2 5.8l1.6-1.6" /></svg>
+            <svg class="i-moon" viewBox="0 0 20 20" aria-hidden="true"><path d="M16.5 12.6A7 7 0 0 1 7.4 3.5a7 7 0 1 0 9.1 9.1Z" /></svg>
+          </button>
+          <button class="tb-btn menu" type="button" aria-expanded="false" aria-controls="nav" aria-label="Menu" data-menu>
+            <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3.5 6h13M3.5 10h13M3.5 14h13" /></svg>
+          </button>
+        </div>
       </div>
     </header>
     <main id="main">
@@ -111,10 +118,16 @@ const person = {
           el.replaceWith(a);
         });
         var menu = document.querySelector('[data-menu]'), nav = document.getElementById('nav');
-        menu && menu.addEventListener('click', function () {
-          var open = nav.classList.toggle('open');
+        function setMenu(open) {
+          nav.classList.toggle('open', open);
           menu.setAttribute('aria-expanded', String(open));
-        });
+        }
+        if (menu) {
+          menu.addEventListener('click', function (e) { e.stopPropagation(); setMenu(!nav.classList.contains('open')); });
+          // Close the menu like a macOS popover: click outside or press Escape.
+          document.addEventListener('click', function (e) { if (!nav.contains(e.target)) setMenu(false); });
+          document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && nav.classList.contains('open')) { setMenu(false); menu.focus(); } });
+        }
         var tg = document.querySelector('[data-theme-toggle]');
         tg && tg.addEventListener('click', function () {
           var root = document.documentElement;

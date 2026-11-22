@@ -637,7 +637,7 @@
         var field = i.options
           ? '<select name="' + i.k + '">' + i.options.map(function (o) { return '<option value="' + esc(o[0]) + '"' + (o[0] === i.value ? " selected" : "") + ">" + esc(o[1]) + "</option>"; }).join("") + "</select>"
           : '<input type="number" inputmode="decimal" step="any" name="' + i.k + '" value="' + i.value + '">';
-        return '<label for="' + id + i.k + '">' + esc(i.label) + (i.unit ? ' <span class="text-muted">(' + esc(i.unit) + ")</span>" : "") + field.replace("name=", 'id="' + id + i.k + '" name=') + "</label>";
+        return '<label for="' + id + i.k + '"><span>' + esc(i.label) + (i.unit ? ' <span class="unit">(' + esc(i.unit) + ")</span>" : "") + "</span>" + field.replace("name=", 'id="' + id + i.k + '" name=') + "</label>";
       }).join("") +
       "</form>" + (spec.scene ? '<div class="calc-scene"><svg viewBox="0 0 640 240" role="img" aria-label="Schematic that follows the inputs"></svg></div>' : "") +
       '<div class="calc-out" aria-live="polite"></div><p class="calc-warn" hidden></p>' +
