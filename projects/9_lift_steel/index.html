@@ -1,0 +1,43 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Choosing the steel for scissor lift arms | Davestia Lab</title><meta name="description" content="How a machine maker can choose the cheapest steel for lift arms that is still safe and stiff enough. First paper in preparation."><link rel="canonical" href="https://davestia.com/projects/9_lift_steel/"><link rel="icon" href="/brand/symbol.svg" type="image/svg+xml"><link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="alternate" type="application/rss+xml" title="Davestia Lab" href="/feed.xml"><link rel="sitemap" href="/sitemap-index.xml"><meta name="theme-color" content="#061F3E"><meta property="og:type" content="article"><meta property="og:site_name" content="Davestia Lab"><meta property="og:title" content="Choosing the steel for scissor lift arms | Davestia Lab"><meta property="og:description" content="How a machine maker can choose the cheapest steel for lift arms that is still safe and stiff enough. First paper in preparation."><meta property="og:url" content="https://davestia.com/projects/9_lift_steel/"><meta property="og:image" content="https://davestia.com/assets/img/og/davestia.png"><meta name="twitter:card" content="summary_large_image"><script>
+      // Light by default; dark only after the visitor picks it with the Theme button.
+      let t = 'light'; try { t = localStorage.getItem('theme') || 'light'; } catch {} document.documentElement.dataset.theme = t;
+    </script><script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"David Setiadhi","url":"https://davestia.com/","jobTitle":"PhD candidate in Mechanical Engineering","affiliation":[{"@type":"CollegeOrUniversity","name":"Bursa Uludağ University"},{"@type":"Organization","name":"Mertay Makina"}],"sameAs":["https://orcid.org/0000-0002-1765-1294","https://www.linkedin.com/in/david-setiadhi-630410108","https://github.com/davidsetiadhi"]}</script><link rel="stylesheet" href="/_astro/Base.Ok1yGndr.css"></head><body data-eu="ZGF2aWRzZXRpYWRoaQ==" data-ed="Z21haWwuY29t"><a class="sr-only skip" href="#main">Skip to content</a><header class="top"><div class="wrap"><a class="brand" href="/" aria-label="Davestia Lab, home"><img class="logo-light" src="/brand/logo.svg" alt="Davestia Lab" width="153" height="34"><img class="logo-dark" src="/brand/logo-white.svg" alt="Davestia Lab" width="153" height="34"></a><nav class="nav" id="nav" aria-label="Main"><a href="/projects/" aria-current="page">Research</a><a href="/publications/">Publications</a><a href="/tools/">Tools</a><a href="/people/">Team</a><a href="/posts/">Blog</a><a href="/cv/">CV</a><button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch light or dark theme">Theme</button></nav><button class="menu" type="button" aria-expanded="false" aria-controls="nav" data-menu>Menu</button></div></header><main id="main"><div class="page-head"><div class="wrap"><a class="crumb" href="/projects/">Research</a><h1>Choosing the steel for scissor lift arms</h1><p>How a machine maker can choose the cheapest steel for lift arms that is still safe and stiff enough. First paper in preparation.</p></div></div><div class="page-body"><div class="wrap"><article class="prose"><img src="/assets/img/illustrations/lift-steel.svg" class="img-fluid rounded" alt="Concept sketch: scissor lift arms and the hollow steel section they are made of" loading="lazy">
+<p>Machine makers often choose the steel type and wall thickness of lift arms with a strength check first, and look at the cost afterwards. That can mean paying more than needed, or arms that bend more than they should.</p>
+<h4 id="who-it-helps">Who it helps</h4>
+<p>Small and medium machine makers, their design engineers and their purchasing teams, who need steel that is safe and stiff enough at the lowest material cost.</p>
+<h4 id="what-we-do">What we do</h4>
+<p>The question came from a factory: which steel is cheaper for the same job? I simulated how the lift arms carry their load, turned the results into a simple calculation model, and combined it with steel prices and a cost and decision analysis. Because the lifts had already been delivered, nothing could be measured afterwards, so the work relies on careful cross-checks between the simulation and the hand calculation.</p>
+<h4 id="status">Status</h4>
+<p>The simulations and the cost analysis are done, and a first paper is being written.</p>
+<h4 id="people">People</h4>
+<ul>
+<li>Fahmi Faqih Montoya: co-author, checks the calculation and cost workbook.</li>
+<li>David Setiadhi: leads the project, ran the simulations, built the calculation and cost models.</li>
+</ul>
+<p><strong>Tools and skills:</strong> ANSYS Mechanical, MATLAB, Python, Excel calculation models with built-in checks, structural design of steel hollow sections, Eurocode, cost comparison, multi-criteria decision analysis.</p></article></div></div></main><footer class="site"><div class="wrap"><a href="/" aria-label="Davestia Lab, home"><img class="logo-light" src="/brand/logo.svg" alt="Davestia Lab" width="117" height="26"><img class="logo-dark" src="/brand/logo-white.svg" alt="Davestia Lab" width="117" height="26"></a><nav aria-label="Profiles"><span class="email-protect" data-label="Email">Email</span><a href="https://orcid.org/0000-0002-1765-1294">ORCID</a><a href="https://www.linkedin.com/in/david-setiadhi-630410108">LinkedIn</a><a href="https://github.com/davidsetiadhi">GitHub</a><a href="/feed.xml">RSS</a><a href="/id/" lang="id">Bahasa Indonesia</a></nav><p class="fine">© 2026 Davestia Lab, David Setiadhi. Publication list and metrics update every week from ORCID and OpenAlex.</p></div></footer><script>
+      (function () {
+        // Email is assembled in the browser so the address never appears whole in the HTML.
+        var b = document.body, u = atob(b.dataset.eu || ''), d = atob(b.dataset.ed || '');
+        document.querySelectorAll('.email-protect').forEach(function (el) {
+          var a = document.createElement('a');
+          a.href = 'mailto:' + u + '@' + d;
+          // data-label sets the link text; without it the address itself is shown.
+          a.textContent = el.dataset.label || u + '@' + d;
+          if (el.className.indexOf('btn') > -1) a.className = el.className.replace('email-protect', '').trim();
+          el.replaceWith(a);
+        });
+        var menu = document.querySelector('[data-menu]'), nav = document.getElementById('nav');
+        menu && menu.addEventListener('click', function () {
+          var open = nav.classList.toggle('open');
+          menu.setAttribute('aria-expanded', String(open));
+        });
+        var tg = document.querySelector('[data-theme-toggle]');
+        tg && tg.addEventListener('click', function () {
+          var root = document.documentElement;
+          var dark = root.dataset.theme === 'dark';
+          root.dataset.theme = dark ? 'light' : 'dark';
+          try { localStorage.setItem('theme', root.dataset.theme); } catch (e) {}
+          window.dispatchEvent(new Event('themechange'));
+        });
+      })();
+    </script></body></html>
