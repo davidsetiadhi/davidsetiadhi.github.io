@@ -1,78 +1,87 @@
 ---
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
-import FlowHero from '../components/FlowHero.astro';
 import NewsItem from '../components/NewsItem.astro';
 import PubItem from '../components/PubItem.astro';
-import Icon from '../components/Icon.astro';
+import ResearchMap from '../components/ResearchMap.astro';
 import { publications } from '../lib/bib';
-import { metrics, fmtDate, SITE } from '../lib/data';
+import { metrics, fmtDate, people, initials } from '../lib/data';
 
-const projects = await getCollection('projects');
-const bySlug = Object.fromEntries(projects.map((p) => [p.id, p]));
-const themes = [
-  {
-    title: 'Ozone sterilization and gas transport',
-    icon: 'ozone',
-    text: 'How ozone is generated, carried and decays in a closed chamber, studied with a mathematical model, CFD and experiments on a prototype I built.',
-    slugs: ['1_ozone_chamber'],
-  },
-  {
-    title: 'Thermal and structural FEM',
-    icon: 'fem',
-    text: 'Finite element studies of coatings, armour, induction heating and EV battery cases, from my years at UMS and after.',
-    slugs: ['3_battery_case', '5_coatings_ballistics'],
-  },
-  {
-    title: 'Mechanisms for industrial automation',
-    icon: 'mechanism',
-    text: 'Concept-to-delivery design and validation of lifting mechanisms, fixtures and platforms for automotive and industrial clients.',
-    slugs: ['2_scissor_lift', '4_stair_platform'],
-  },
-];
-const tag = (c: string) => (c === 'industry' ? 'Industry, Mertay Makina' : 'Research');
 const selected = publications().filter((p) => p.selected).slice(0, 4);
 const news = (await getCollection('news')).sort((a, b) => +b.data.date - +a.data.date).slice(0, 4);
 const tools = (await getCollection('tools')).sort((a, b) => a.data.title.localeCompare(b.data.title));
+const short = (aff: string) => aff.replace(/^Department of /, '').replace(/, Türkiye$|, Indonesia$/, '');
 ---
 <Base>
-  <section class="hero" aria-labelledby="hero-title">
-    <FlowHero />
-    <div class="wrap">
-      <h1 id="hero-title">{SITE.tagline}</h1>
-      <p class="lead">{SITE.description}</p>
-      <div class="actions">
-        <a class="btn btn-solid" href="/projects/">See the research</a>
-        <a class="btn btn-line" href="/assets/pdf/David_Setiadhi_CV.pdf">Download CV</a>
+  <section class="intro" aria-labelledby="hero-title">
+    <div class="wrap intro-grid">
+      <div class="intro-text">
+        <h1 id="hero-title">David Setiadhi</h1>
+        <p class="intro-role">Mechanical engineer in Bursa, Türkiye</p>
+        <p class="lead">I build computer models and lab tests to answer practical engineering questions, such as whether every tool inside a sterilizer gets enough ozone, or which steel is the cheapest safe choice for a machine part.</p>
+        <p>I am finishing my PhD at Bursa Uludağ University, and I work as an R&amp;D engineer at Mertay Makina, where I design machines for factory lines.</p>
+        <div class="avail">
+          <p><strong>Available from January 2027.</strong> PhD defense in mid-December 2026. Open to postdoc, lecturer and R&amp;D engineer roles in Türkiye, Indonesia or abroad.</p>
+        </div>
+        <div class="actions">
+          <a class="btn btn-solid" href="#research">See what I work on</a>
+          <a class="btn btn-line" href="/assets/pdf/David_Setiadhi_CV.pdf">Download CV</a>
+          <span class="email-protect btn btn-line" data-label="Email me">Email me</span>
+        </div>
       </div>
+      <figure class="intro-photo">
+        <img src="/assets/img/david-2026.jpg" alt="David Setiadhi in graduation dress, 2026" width="960" height="1200" fetchpriority="high" />
+      </figure>
     </div>
   </section>
 
-  <div class="status">
-    <div class="wrap"><p><strong>Available from January 2027.</strong> PhD defense in mid-December 2026. Open to postdoc, lecturer and R&amp;D engineer roles in Türkiye, Indonesia or abroad. <span class="email-protect" data-label="Get in touch">Get in touch</span></p></div>
-  </div>
-
-  <section id="research">
+  <section id="research" class="research">
     <div class="wrap">
-      <h2>Research</h2>
-      <div class="themes">
-        {themes.map((t) => (
-          <div class="theme">
-            <span class="theme-icon"><Icon name={t.icon as any} size={26} /></span>
-            <h3>{t.title}</h3>
-            <p>{t.text}</p>
-            <ul>
-              {t.slugs.filter((s) => bySlug[s]).map((s) => (
-                <li><a href={`/projects/${s}/`}>{bySlug[s].data.title}</a><span class="tag"><Icon name={bySlug[s].data.category === 'industry' ? 'industry' : 'research'} size={14} />{tag(bySlug[s].data.category)}</span></li>
-              ))}
-            </ul>
-          </div>
+      <h2>What I work on, and who it helps</h2>
+      <p class="section-lead">My projects fall into five areas. Some are published, some are under way, and one is planned. For work that is not yet published, the map shows the goal and the people, not the results.</p>
+      <ResearchMap />
+    </div>
+  </section>
+
+  <section id="skills" class="skills">
+    <div class="wrap">
+      <h2>Skills at a glance</h2>
+      <dl class="skill-grid">
+        <div><dt>Simulation</dt><dd>ANSYS Fluent (CFD), ANSYS Workbench, Abaqus, LS-DYNA, thermal and structural analysis, high-speed impact, model validation against measurements</dd></div>
+        <div><dt>Design</dt><dd>SolidWorks, Creo, mechanisms, fixtures and jigs, hydraulic sizing, design for manufacture, cost estimation</dd></div>
+        <div><dt>Experiments</dt><dd>Building and instrumenting test rigs, gas concentration and flow measurement, thermal and mechanical tests, design of experiments</dd></div>
+        <div><dt>Data and code</dt><dd>Python, MATLAB, statistics, systematic literature review, open data</dd></div>
+        <div><dt>Languages</dt><dd>Indonesian (native), English and Turkish (professional working proficiency)</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section id="team" class="team">
+    <div class="wrap">
+      <h2>The team</h2>
+      <p class="section-lead">Davestia Lab is the name for the work I do with a small group of students and researchers. Each of them owns a real part of a project.</p>
+      <ul class="team-grid">
+        {people.team.map((p) => (
+          <li class="member">
+            {p.photo ? <img src={p.photo} alt={p.name} width="160" height="160" loading="lazy" /> : <span class="member-ph" aria-hidden="true">{initials(p.name)}</span>}
+            <h3>{p.name}</h3>
+            <span class="role">{short(p.affiliations[0])}</span>
+            {p.focus && <p>{p.focus}</p>}
+            {p.orcid && <a class="meta" href={`https://orcid.org/${p.orcid}`}>ORCID</a>}
+          </li>
         ))}
-      </div>
+      </ul>
+      <p class="collab">
+        <strong>We also work with</strong>
+        {people.collaborators.map((c, i) => (
+          <span>{c.name} ({short(c.affiliations[0])}){i < people.collaborators.length - 1 ? ', ' : '.'}</span>
+        ))}
+        <a href="/people/">More about the people</a>
+      </p>
     </div>
   </section>
 
-  <section id="publications" style="padding-top:0">
+  <section id="publications">
     <div class="wrap">
       <h2>Selected publications</h2>
       <ol class="pubs">{selected.map((p) => <PubItem pub={p} />)}</ol>
@@ -87,7 +96,7 @@ const tools = (await getCollection('tools')).sort((a, b) => a.data.title.localeC
     <div class="wrap grid">
       <div>
         <h2>Engineering tools</h2>
-        <p>Calculators with the equations, limits and references written out, so the result can be checked by hand.</p>
+        <p>Free calculators for everyday engineering checks. Each one shows its equations, limits and references, so the result can be checked by hand.</p>
         <a class="btn btn-line" href="/tools/">Open the tools</a>
       </div>
       <ul class="tools">
@@ -97,24 +106,10 @@ const tools = (await getCollection('tools')).sort((a, b) => a.data.title.localeC
   </section>
 
   <section id="news">
-    <div class="wrap two">
-      <div>
-        <h2>News</h2>
-        <ul class="news">{news.map((n) => <NewsItem item={n} />)}</ul>
-        <p class="meta" style="margin-top:16px"><a href="/news/">All news</a> · <a href="/talks/">Talks</a></p>
-      </div>
-      <div id="people">
-        <h2>People</h2>
-        <div class="person">
-          <img src="/assets/img/prof_pic.jpg" alt="David Setiadhi" width="96" height="96" />
-          <div><h3>David Setiadhi</h3><span class="role">Lead, PhD candidate</span><p>Mechanical engineer working on CFD, modeling and experiments, with 3.5 years of industrial R&amp;D.</p></div>
-        </div>
-        <div class="person">
-          <div class="ph" aria-hidden="true">KÇ</div>
-          <div><h3>Prof. Dr. Kadir Çavdar</h3><span class="role">Doctoral supervisor, Bursa Uludağ University</span><p>Supervisor of the dissertation on ozone transport.</p></div>
-        </div>
-        <p class="meta" style="margin-top:16px"><a href="/people/">About the lab and its people</a></p>
-      </div>
+    <div class="wrap">
+      <h2>News</h2>
+      <ul class="news">{news.map((n) => <NewsItem item={n} />)}</ul>
+      <p class="meta" style="margin-top:16px"><a href="/news/">All news</a> · <a href="/talks/">Talks</a> · <a href="/posts/">Blog</a></p>
     </div>
   </section>
 

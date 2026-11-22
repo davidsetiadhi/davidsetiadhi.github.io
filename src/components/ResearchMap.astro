@@ -1,0 +1,398 @@
+---
+// Interactive research map: David at the centre, five directions on the inner ring, projects on the
+// outer ring, and a detail card on the right. Data: _data/research.yml and _data/people.yml.
+// Below 900px the map is replaced by a grouped list built from the same data. Hover or focus previews
+// an item; a click keeps it selected. Visual language follows iOS: capsules, grouped lists, soft depth.
+import { research, people, initials } from '../lib/data';
+
+const { directions, projects, links } = research;
+// Radii are [x, y] in viewBox units; slightly elliptical so the labels on the left and right get room.
+const W = 1200, H = 1060, CX = 600, CY = 530, R1: [number, number] = [245, 205], R2: [number, number] = [392, 378], SPREAD = 26;
+const rad = (deg: number) => (deg * Math.PI) / 180;
+const pt = (r: [number, number], deg: number) => ({ x: CX + r[0] * Math.cos(rad(deg)), y: CY + r[1] * Math.sin(rad(deg)) });
+const grow = (r: [number, number], d: number): [number, number] => [r[0] + d, r[1] + d];
+const pct = (p: { x: number; y: number }) => `left:${(p.x / W) * 100}%;top:${(p.y / H) * 100}%`;
+const slug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+
+const everyone = [...people.team.map((p) => ({ ...p, group: 'team' })), ...people.collaborators.map((p) => ({ ...p, group: 'collaborator' }))];
+const personBy = Object.fromEntries(everyone.map((p) => [p.name, p]));
+
+const dirs = directions.map((d, i) => {
+  const angle = -90 + (360 / directions.length) * i;
+  const items = projects.filter((p) => p.direction === d.id);
+  return { ...d, angle, pos: pt(R1, angle), items };
+});
+const dirBy = Object.fromEntries(dirs.map((d) => [d.id, d]));
+const nodes = dirs.flatMap((d) =>
+  d.items.map((p, j) => {
+    const angle = d.angle + (j - (d.items.length - 1) / 2) * SPREAD;
+    const c = Math.cos(rad(angle));
+    const side = c > 0.12 ? 'r' : c < -0.12 ? 'l' : Math.sin(rad(angle)) < 0 ? 't' : 'b';
+    return { ...p, angle, pos: pt(R2, angle), side, hue: d.hue, people: p.people ?? [] };
+  }),
+);
+const nodeBy = Object.fromEntries(nodes.map((n) => [n.id, n]));
+const pkey = (name: string) => `p-${slug(name)}`;
+const onMap = everyone.filter((p) => nodes.some((n) => n.people.includes(p.name)));
+
+// Keys under which each element lights up.
+const dirKeys = (d: (typeof dirs)[number]) => [d.id, ...d.items.map((p) => p.id), ...d.items.flatMap((p) => (p.people ?? []).map(pkey))];
+const projKeys = (n: (typeof nodes)[number]) => [n.id, n.direction, ...n.people.map(pkey)];
+const statusText = { published: 'Published', ongoing: 'Ongoing', planned: 'Planned' } as const;
+const face = (name: string) => personBy[name];
+const chevron = '<svg viewBox="0 0 8 14" width="8" height="14" aria-hidden="true"><path d="M1 1l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+---
+<div class="rmap" data-rmap>
+  <div class="rmap-stage">
+    <div class="rmap-canvas">
+      <svg viewBox={`0 0 ${W} ${H}`} aria-hidden="true" focusable="false">
+        <defs>
+          <radialGradient id="rm-halo"><stop offset="0" stop-color="var(--cobalt)" stop-opacity="0.10" /><stop offset="1" stop-color="var(--cobalt)" stop-opacity="0" /></radialGradient>
+        </defs>
+        <ellipse cx={CX} cy={CY} rx={R1[0] + 40} ry={R1[1] + 40} fill="url(#rm-halo)" />
+        <ellipse cx={CX} cy={CY} rx={R2[0]} ry={R2[1]} class="ring" />
+        {dirs.map((d) => <line x1={CX} y1={CY} x2={d.pos.x} y2={d.pos.y} stroke={d.hue} class="ln ln-dir" data-on={dirKeys(d).join(' ')} />)}
+        {nodes.map((n) => {
+          const d = dirBy[n.direction];
+          return <line x1={d.pos.x} y1={d.pos.y} x2={n.pos.x} y2={n.pos.y} stroke={n.hue} class={`ln ln-proj${n.status === 'planned' ? ' planned' : ''}`} data-on={[d.id, ...projKeys(n)].join(' ')} />;
+        })}
+        {links.map((l) => {
+          const a = nodeBy[l.from], b = nodeBy[l.to];
+          if (!a || !b) return null;
+          const mid = pt(grow(R2, 90), (a.angle + b.angle) / 2);
+          return (
+            <g class="ln-link" data-on={[a.id, b.id, a.direction, b.direction].join(' ')}>
+              <path d={`M${a.pos.x} ${a.pos.y} Q${mid.x} ${mid.y} ${b.pos.x} ${b.pos.y}`} />
+            </g>
+          );
+        })}
+      </svg>
+
+      <button type="button" class="n n-center" style={pct({ x: CX, y: CY })} data-key="overview" aria-label="David Setiadhi: show all research areas">
+        <img src="/assets/img/david-2026-square.jpg" alt="" width="120" height="120" loading="lazy" />
+      </button>
+
+      {dirs.map((d) => (
+        <button type="button" class="n n-dir" style={`${pct(d.pos)};--hue:${d.hue}`} data-key={d.id} data-on={dirKeys(d).join(' ')}>
+          {d.label}
+        </button>
+      ))}
+
+      {nodes.map((n) => (
+        <button type="button" class={`n n-proj side-${n.side} st-${n.status}`} style={`${pct(n.pos)};--hue:${n.hue}`} data-key={n.id} data-on={projKeys(n).join(' ')}>
+          <span class="dot" aria-hidden="true"></span>
+          <span class="lbl">{n.label}{n.status === 'planned' && <em>Planned</em>}</span>
+        </button>
+      ))}
+
+      {links.map((l) => {
+        const a = nodeBy[l.from], b = nodeBy[l.to];
+        if (!a || !b) return null;
+        const mid = pt(grow(R2, 66), (a.angle + b.angle) / 2);
+        return <span class="link-lbl" style={pct(mid)} data-on={[a.id, b.id, a.direction, b.direction].join(' ')}>{l.label}</span>;
+      })}
+    </div>
+
+    {onMap.length > 0 && (
+      <div class="rmap-people">
+        <h3>Who works on what</h3>
+        <ul>
+          {onMap.map((p) => (
+            <li>
+              <button type="button" class="n chip-person" data-key={pkey(p.name)} data-on={[pkey(p.name), ...nodes.filter((n) => n.people.includes(p.name)).flatMap((n) => [n.id, n.direction])].join(' ')}>
+                {p.photo ? <img src={p.photo} alt="" width="28" height="28" /> : <span class="ini" aria-hidden="true">{initials(p.name)}</span>}
+                <span>{p.name}</span>
+              </button>
+            </li>
+          ))}
+        </ul>
+      </div>
+    )}
+  </div>
+
+  <aside class="rmap-panel" aria-live="polite">
+    <article data-panel="overview">
+      <h3>Five areas, one way of working</h3>
+      <p class="rp-lead">I build a model of a real problem, check it against measurements, and turn it into an answer someone can use. Pick an area to see who it helps and where it is going.</p>
+      <ul class="group">
+        {dirs.map((d) => (
+          <li>
+            <button type="button" class="row" data-select={d.id} style={`--hue:${d.hue}`}>
+              <span class="ico" aria-hidden="true"></span>
+              <span class="row-text"><b>{d.label}</b><small>{d.why}</small></span>
+              <span class="chev" set:html={chevron} />
+            </button>
+          </li>
+        ))}
+      </ul>
+    </article>
+
+    {dirs.map((d) => (
+      <article data-panel={d.id} hidden>
+        <button type="button" class="back" data-select="overview"><span set:html={chevron} />All areas</button>
+        <h3 class="rp-title" style={`--hue:${d.hue}`}><span class="ico" aria-hidden="true"></span>{d.label}</h3>
+        <dl class="facts">
+          <div><dt>Why it matters</dt><dd>{d.why}</dd></div>
+          <div><dt>Where it is going</dt><dd>{d.next}</dd></div>
+        </dl>
+        <ul class="group">
+          {d.items.map((p) => (
+            <li>
+              <button type="button" class="row" data-select={p.id} style={`--hue:${d.hue}`}>
+                <span class="ico small" aria-hidden="true"></span>
+                <span class="row-text"><b>{p.label}</b></span>
+                <span class={`cap st-${p.status}`}>{statusText[p.status]}</span>
+                <span class="chev" set:html={chevron} />
+              </button>
+            </li>
+          ))}
+        </ul>
+      </article>
+    ))}
+
+    {nodes.map((n) => (
+      <article data-panel={n.id} hidden>
+        <button type="button" class="back" data-select={n.direction}><span set:html={chevron} />{dirBy[n.direction].label}</button>
+        <h3>{n.label}</h3>
+        <p class="rp-meta"><span class={`cap st-${n.status}`}>{statusText[n.status]}</span><span>{n.period}</span></p>
+        <p>{n.summary}</p>
+        <dl class="facts">
+          <div><dt>My role</dt><dd>{n.role}</dd></div>
+          {n.skills && <div><dt>Tools and skills</dt><dd>{n.skills.join(', ')}</dd></div>}
+        </dl>
+        {(n.people.length > 0 || n.with) && (
+          <ul class="group">
+            {n.people.map((name) => {
+              const p = face(name);
+              return (
+                <li>
+                  <button type="button" class="row" data-select={pkey(name)}>
+                    {p?.photo ? <img src={p.photo} alt="" width="30" height="30" /> : <span class="ini" aria-hidden="true">{initials(name)}</span>}
+                    <span class="row-text"><b>{name}</b>{p && <small>{p.group === 'team' ? 'Team' : 'Collaborator'}</small>}</span>
+                    <span class="chev" set:html={chevron} />
+                  </button>
+                </li>
+              );
+            })}
+            {n.with && (
+              <li><span class="row static"><span class="ini" aria-hidden="true">{initials(n.with[0])}</span><span class="row-text"><b>{n.with[0]}</b>{n.with[1] && <small>{n.with[1]}</small>}</span></span></li>
+            )}
+          </ul>
+        )}
+        {n.page && <a class="pill" href={n.page}>Read about this project</a>}
+      </article>
+    ))}
+
+    {onMap.map((p) => (
+      <article data-panel={pkey(p.name)} hidden>
+        <button type="button" class="back" data-select="overview"><span set:html={chevron} />All areas</button>
+        <div class="rp-face">
+          {p.photo ? <img src={p.photo} alt="" width="64" height="64" /> : <span class="ini big" aria-hidden="true">{initials(p.name)}</span>}
+          <div>
+            <h3>{p.name}</h3>
+            <p class="rp-meta"><span>{p.group === 'team' ? 'Team' : 'Collaborator'}</span></p>
+          </div>
+        </div>
+        <p class="rp-aff">{p.affiliations[0]}</p>
+        {p.focus && <p>{p.focus}</p>}
+        <ul class="group">
+          {nodes.filter((n) => n.people.includes(p.name)).map((n) => (
+            <li>
+              <button type="button" class="row" data-select={n.id} style={`--hue:${n.hue}`}>
+                <span class="ico small" aria-hidden="true"></span>
+                <span class="row-text"><b>{n.label}</b></span>
+                <span class={`cap st-${n.status}`}>{statusText[n.status]}</span>
+                <span class="chev" set:html={chevron} />
+              </button>
+            </li>
+          ))}
+        </ul>
+      </article>
+    ))}
+  </aside>
+
+  <div class="rmap-list">
+    {dirs.map((d, i) => (
+      <details open={i === 0} style={`--hue:${d.hue}`}>
+        <summary><span class="ico" aria-hidden="true"></span><span class="row-text"><b>{d.label}</b><small>{d.why}</small></span><span class="chev" set:html={chevron} /></summary>
+        <div class="rl-body">
+          <p><strong>Where it is going.</strong> {d.next}</p>
+          <ul>
+            {d.items.map((p) => (
+              <li>
+                <span class="rl-head">{p.page ? <a href={p.page}>{p.label}</a> : <b>{p.label}</b>}<span class={`cap st-${p.status}`}>{statusText[p.status]}</span></span>
+                <span class="rl-sum">{p.summary}</span>
+                {p.people && p.people.length > 0 && <span class="rl-who">With {p.people.join(', ')}</span>}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </details>
+    ))}
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-rmap]').forEach((root) => {
+    const lit = root.querySelectorAll<Element>('[data-on]');
+    const panels = root.querySelectorAll<HTMLElement>('[data-panel]');
+    let selected = 'overview';
+    let current = 'overview';
+    const show = (key: string) => {
+      const focus = key !== 'overview';
+      root.toggleAttribute('data-focus', focus);
+      lit.forEach((el) => el.classList.toggle('on', focus && (el.getAttribute('data-on') || '').split(' ').includes(key)));
+      root.querySelectorAll('.n[data-key]').forEach((el) => el.classList.toggle('sel', el.getAttribute('data-key') === key));
+      if (key === current) return;
+      current = key;
+      panels.forEach((p) => {
+        const on = p.dataset.panel === key;
+        p.hidden = !on;
+        if (on) { p.classList.remove('enter'); void p.offsetWidth; p.classList.add('enter'); }
+      });
+    };
+    const select = (key: string) => { selected = key; show(key); };
+    root.querySelectorAll<HTMLElement>('.n[data-key]').forEach((el) => {
+      const key = el.dataset.key!;
+      el.addEventListener('mouseenter', () => show(key));
+      el.addEventListener('mouseleave', () => show(selected));
+      el.addEventListener('focus', () => show(key));
+      el.addEventListener('blur', () => show(selected));
+      el.addEventListener('click', () => select(selected === key && key !== 'overview' ? 'overview' : key));
+    });
+    root.addEventListener('click', (e) => {
+      const t = (e.target as HTMLElement).closest<HTMLElement>('[data-select]');
+      if (t) select(t.dataset.select!);
+    });
+    root.addEventListener('keydown', (e) => { if (e.key === 'Escape') select('overview'); });
+  });
+</script>
+
+<style>
+  /* iOS-like system values, mapped onto the site palette. */
+  .rmap {
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --label: #1c2433;
+    --label-2: rgba(60, 67, 82, 0.72);
+    --fill: rgba(118, 128, 148, 0.12);
+    --sep: rgba(60, 67, 82, 0.14);
+    --card: #ffffff;
+    display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(320px, 1fr); gap: 48px; align-items: start;
+  }
+  :global(:root[data-theme='dark']) .rmap { --label: #eef2f8; --label-2: rgba(226, 232, 242, 0.68); --fill: rgba(160, 175, 200, 0.16); --sep: rgba(226, 232, 242, 0.14); --card: #10233f; }
+
+  .rmap-canvas { position: relative; aspect-ratio: 1200 / 1060; }
+  .rmap svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+  .ring { fill: none; stroke: var(--sep); stroke-width: 1.5; }
+  .ln { stroke-width: 2; stroke-linecap: round; opacity: 0.38; transition: opacity 0.35s var(--ease), stroke-width 0.35s var(--ease); }
+  .ln.planned { stroke-dasharray: 2 8; }
+  .ln-link path { fill: none; stroke: var(--teal); stroke-width: 1.75; stroke-dasharray: 2 7; stroke-linecap: round; opacity: 0.55; transition: opacity 0.35s var(--ease); }
+
+  .n { position: absolute; transform: translate(-50%, -50%); font: 500 14.5px/1.25 var(--display); color: var(--label); background: none; border: 0; padding: 0; cursor: pointer; letter-spacing: -0.01em; transition: opacity 0.35s var(--ease); -webkit-tap-highlight-color: transparent; }
+  .n-center { width: 11.5%; aspect-ratio: 1; border-radius: 50%; overflow: hidden; box-shadow: 0 0 0 5px var(--card), 0 12px 30px rgba(15, 30, 60, 0.18); transition: transform 0.4s var(--ease), box-shadow 0.4s var(--ease); }
+  .n-center:hover { transform: translate(-50%, -50%) scale(1.04); }
+  .n-center img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .n-dir { padding: 9px 16px; border-radius: 999px; white-space: nowrap; font-weight: 600; font-size: 15px; color: var(--hue); background: color-mix(in srgb, var(--hue) 11%, var(--card)); box-shadow: 0 1px 2px rgba(15, 30, 60, 0.06), 0 4px 14px rgba(15, 30, 60, 0.06); transition: transform 0.35s var(--ease), background 0.25s ease, color 0.25s ease, opacity 0.35s var(--ease); }
+  .n-dir:hover, .n-dir.sel { background: var(--hue); color: #fff; transform: translate(-50%, -50%) scale(1.04); }
+  .n-proj { display: flex; align-items: center; gap: 9px; text-align: left; }
+  .n-proj .dot { flex: none; width: 13px; height: 13px; border-radius: 50%; background: var(--hue); box-shadow: 0 0 0 3px var(--card), 0 2px 6px rgba(15, 30, 60, 0.2); transition: transform 0.35s var(--ease); }
+  .n-proj.st-planned .dot { background: var(--card); box-shadow: inset 0 0 0 2px var(--hue), 0 0 0 3px var(--card); }
+  .n-proj .lbl { width: max-content; max-width: 150px; }
+  .n-proj em { display: block; font-style: normal; font-size: 12.5px; color: var(--label-2); }
+  .n-proj.side-r { transform: translate(-6px, -50%); }
+  .n-proj.side-l { transform: translate(calc(-100% + 6px), -50%); flex-direction: row-reverse; text-align: right; }
+  .n-proj.side-t { transform: translate(-50%, calc(-100% + 6px)); flex-direction: column-reverse; text-align: center; gap: 5px; }
+  .n-proj.side-b { transform: translate(-50%, -6px); flex-direction: column; text-align: center; gap: 5px; }
+  .n-proj:hover .dot, .n-proj.sel .dot, .n-proj:focus-visible .dot { transform: scale(1.35); }
+  .n-proj:hover .lbl, .n-proj.sel .lbl { color: var(--hue); }
+  .n-proj.sel .lbl { font-weight: 600; }
+  .link-lbl { position: absolute; transform: translate(-50%, -50%); font: 500 12px var(--display); color: var(--teal); white-space: nowrap; transition: opacity 0.35s var(--ease); }
+
+  .rmap[data-focus] [data-on]:not(.on) { opacity: 0.16; }
+  .rmap[data-focus] .ln.on { opacity: 0.95; stroke-width: 3; }
+  .rmap[data-focus] .ln-link.on path { opacity: 1; }
+
+  .rmap-people { margin-top: 12px; }
+  .rmap-people h3 { font-size: 13px; font-weight: 600; color: var(--label-2); text-transform: none; margin: 0 0 10px; letter-spacing: 0; }
+  .rmap-people ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip-person { position: static; transform: none; display: flex; align-items: center; gap: 8px; padding: 4px 14px 4px 4px; border-radius: 999px; font-size: 14px; background: var(--fill); transition: background 0.25s ease, color 0.25s ease, opacity 0.35s var(--ease); }
+  .chip-person:hover, .chip-person.sel { background: var(--cobalt); color: #fff; }
+  .chip-person img { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; }
+  .ini { display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--card); color: var(--navy); font: 700 11px var(--display); flex: none; box-shadow: inset 0 0 0 1px var(--sep); }
+  .ini.big { width: 64px; height: 64px; font-size: 20px; border-radius: 16px; }
+
+  /* Detail card */
+  .rmap-panel { position: sticky; top: 92px; background: var(--card); border-radius: 22px; padding: 22px 22px 24px; box-shadow: 0 1px 2px rgba(15, 30, 60, 0.05), 0 18px 40px rgba(15, 30, 60, 0.09); border: 1px solid var(--sep); min-height: 420px; }
+  .rmap-panel article.enter { animation: rm-in 0.32s var(--ease); }
+  @keyframes rm-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  .rmap-panel h3 { font-size: 24px; font-weight: 700; letter-spacing: -0.025em; margin: 0 0 8px; color: var(--label); }
+  .rmap-panel p { font-size: 15.5px; line-height: 1.55; margin: 0 0 14px; color: var(--label); }
+  .rp-lead { color: var(--label-2) !important; }
+  .rp-title { display: flex; align-items: center; gap: 10px; }
+  .ico { flex: none; width: 30px; height: 30px; border-radius: 8px; background: radial-gradient(circle, #fff 0 4px, transparent 4.5px), var(--hue); box-shadow: 0 1px 3px rgba(15, 30, 60, 0.15); }
+  .ico.small { width: 10px; height: 10px; border-radius: 50%; background: var(--hue); box-shadow: none; margin: 0 4px; }
+  .back { display: inline-flex; align-items: center; gap: 6px; background: none; border: 0; padding: 4px 0; margin: -4px 0 8px; font: 500 15px var(--display); color: var(--cobalt); cursor: pointer; }
+  .back :global(svg) { transform: scaleX(-1); }
+  .back:hover { opacity: 0.7; }
+  .rp-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; font: 500 14px var(--display) !important; color: var(--label-2) !important; }
+  .rp-aff { color: var(--label-2) !important; font-size: 14.5px !important; }
+  .cap { display: inline-block; font: 600 12px/1 var(--display); padding: 5px 9px; border-radius: 999px; background: color-mix(in srgb, currentColor 13%, transparent); white-space: nowrap; }
+  .cap.st-published { color: var(--teal); }
+  .cap.st-ongoing { color: var(--cobalt); }
+  .cap.st-planned { color: #6b7280; }
+
+  .facts { margin: 0 0 16px; background: var(--fill); border-radius: 14px; padding: 4px 14px; }
+  .facts div { padding: 10px 0; }
+  .facts div + div { border-top: 1px solid var(--sep); }
+  .facts dt { font: 600 12.5px var(--display); color: var(--label-2); margin-bottom: 3px; }
+  .facts dd { margin: 0; font-size: 15px; line-height: 1.5; color: var(--label); }
+
+  .group { list-style: none; margin: 0 0 16px; padding: 0; background: var(--fill); border-radius: 14px; overflow: hidden; }
+  .group li + li .row { box-shadow: inset 0 1px 0 var(--sep); }
+  .row { width: 100%; display: flex; align-items: center; gap: 12px; min-height: 48px; padding: 9px 14px; background: none; border: 0; text-align: left; cursor: pointer; font: 500 15px/1.3 var(--display); color: var(--label); transition: background 0.2s ease; }
+  .row:hover { background: color-mix(in srgb, var(--cobalt) 7%, transparent); }
+  .row:active { background: color-mix(in srgb, var(--cobalt) 14%, transparent); }
+  .row.static { cursor: default; }
+  .row.static:hover { background: none; }
+  .row img { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; }
+  .row .ini { width: 30px; height: 30px; }
+  .row-text { flex: 1; min-width: 0; display: grid; gap: 2px; }
+  .row-text b { font-weight: 600; }
+  .row-text small { font: 400 13.5px/1.4 var(--display); color: var(--label-2); }
+  .chev { flex: none; color: rgba(60, 67, 82, 0.35); display: inline-flex; }
+  .pill { display: inline-flex; align-items: center; justify-content: center; width: 100%; padding: 13px 18px; border-radius: 14px; background: var(--cobalt); color: #fff; font: 600 15.5px var(--display); text-decoration: none; transition: transform 0.2s var(--ease), opacity 0.2s ease; }
+  .pill:hover { opacity: 0.9; }
+  .pill:active { transform: scale(0.98); }
+  .rp-face { display: flex; gap: 14px; align-items: center; margin-bottom: 10px; }
+  .rp-face img { width: 64px; height: 64px; border-radius: 16px; object-fit: cover; }
+  .rp-face h3 { margin: 0 0 4px; }
+  .rp-face .rp-meta { margin: 0 !important; }
+
+  /* Small screens: grouped list */
+  .rmap-list { display: none; }
+  .rmap-list details { background: var(--card); border: 1px solid var(--sep); border-radius: 16px; margin-bottom: 10px; overflow: hidden; }
+  .rmap-list summary { list-style: none; display: flex; align-items: center; gap: 12px; padding: 14px; cursor: pointer; }
+  .rmap-list summary::-webkit-details-marker { display: none; }
+  .rmap-list summary .chev { transition: transform 0.3s var(--ease); }
+  .rmap-list details[open] summary .chev { transform: rotate(90deg); }
+  .rl-body { padding: 0 14px 12px; }
+  .rmap-list p { font-size: 15px; margin: 0 0 10px; }
+  .rmap-list ul { list-style: none; padding: 0; margin: 0; background: var(--fill); border-radius: 12px; }
+  .rmap-list li { padding: 12px; display: grid; gap: 4px; }
+  .rmap-list li + li { border-top: 1px solid var(--sep); }
+  .rl-head { font: 600 15.5px var(--display); display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .rl-head a { color: var(--navy); }
+  .rl-sum { font-size: 15px; line-height: 1.5; }
+  .rl-who { font: 500 13px var(--display); color: var(--label-2); }
+
+  @media (max-width: 1180px) { .n-proj .lbl { max-width: 120px; } .n-proj { font-size: 13.5px; } .n-dir { font-size: 13.5px; padding: 7px 13px; } }
+  @media (max-width: 900px) {
+    .rmap { display: block; }
+    .rmap-stage, .rmap-panel { display: none; }
+    .rmap-list { display: block; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ln, .n, .n-dir, .n-center, .ln-link path, .link-lbl, .n-proj .dot, .row, .pill { transition: none; }
+    .rmap-panel article.enter { animation: none; }
+  }
+</style>

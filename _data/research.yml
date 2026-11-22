@@ -1,0 +1,157 @@
+# Research map on the home page (src/components/ResearchMap.astro).
+# Built from the project cards in D:\Website\davestia\project-cards.yaml (not public).
+# Rule for unpublished work: topic, goal, status and people only. No numbers, results, materials,
+# settings, paper titles or target journals. Plain English for readers without an engineering
+# background.
+#
+# directions: listed clockwise from the top of the map.
+# projects.people: names exactly as in _data/people.yml (team or collaborators). Others go in `with`.
+# status: published | ongoing | planned
+
+directions:
+  - id: health
+    label: Health
+    hue: '#0f766e'
+    why: Cleaning medical tools that cannot take heat, and dental fillings that last longer.
+    next: Publish the sterilizer chamber results, then use the same models to help design low-temperature sterilizers that clinics can rely on.
+  - id: environment
+    label: Environment
+    hue: '#3f7d3a'
+    why: Cleaning up soil polluted by oil, fuel and farm chemicals.
+    next: Finish checking the data from many lab studies so their results can be compared on one scale, then publish.
+  - id: energy
+    label: Engines & energy
+    hue: '#a35a12'
+    why: Burning less fuel in small engines, and keeping energy hardware safe and cool.
+    next: Publish the engine study, and start a computer study on solar panels in 2027.
+  - id: industry
+    label: Industry
+    hue: '#1749bc'
+    why: Factory machines that are safe and stiff enough without costing more than they need to.
+    next: Show machine makers how to choose steel by cost and safety together, from the start of a design.
+  - id: safety
+    label: Safety & materials
+    hue: '#475569'
+    why: Protective plates and hard coatings that hold up under impact and stress.
+    next: Finish the armor simulations, so that plate options can be compared before costly live firing tests.
+
+links:
+  - from: ozone
+    to: soil
+    label: Same gas, two uses
+
+projects:
+  - id: dental
+    label: Dental fillings
+    direction: health
+    status: ongoing
+    period: 2026 to now
+    page: /projects/8_dental_restoration/
+    summary: A filling can come loose or crack when its bond to the tooth is weak. I am building a computer model of a filled tooth, fed by data checked against published studies, so that options can be compared without testing on real teeth.
+    role: Leads the project. Designed the study, builds the simulation model, and set up how the data is collected and checked.
+    people: [Fatih Rahman Hermawan]
+    skills: [ANSYS Workbench, SolidWorks, Python, Systematic review]
+
+  - id: ozone
+    label: Ozone sterilizer
+    direction: health
+    status: ongoing
+    period: 2022 to now · PhD
+    page: /projects/1_ozone_chamber/
+    summary: Hospitals clean heat-sensitive tools with ozone gas, but a single sensor reads the dose at one spot only. I study how the gas moves and breaks down inside the chamber, so that every surface gets enough.
+    role: Designed and built the prototype chamber, ran the tests, wrote the models and ran the computer simulations (CFD).
+    with: [Prof. Dr. Kadir Çavdar, PhD supervisor]
+    skills: [ANSYS Fluent CFD, Python, Prototype build, Sensors and data logging]
+
+  - id: soil
+    label: Ozone soil cleanup
+    direction: environment
+    status: ongoing
+    period: 2026 to now
+    page: /projects/10_soil_ozone/
+    summary: Polluted soil is slow and costly to clean, and lab studies on ozone treatment are hard to compare. I lead a structured review of those studies and bring their data into one checked dataset.
+    role: Leads the project. Set the research questions and designed the review and the database.
+    people: [Wan Hafizh Zulfikar, Fatih Rahman Hermawan]
+    skills: [Systematic review (PRISMA), Database design, Python, Data quality control]
+
+  - id: engine
+    label: Engine water injection
+    direction: energy
+    status: ongoing
+    period: 2025 to now
+    page: /projects/6_water_injection/
+    summary: Small motorcycle engines lose part of their fuel as heat. With a partner lab in Indonesia, we tested on a real engine how two simple changes, a higher compression ratio and a small spray of water, work together.
+    role: Corresponding author. Ran the statistical analysis, made the figures, wrote the paper and released the data.
+    people: [Apri Rahmadi, Fatih Rahman Hermawan, Wan Hafizh Zulfikar, Apri Wiyono]
+    skills: [Python statistics, Design of experiments, Engine testing, Open data]
+
+  - id: battery
+    label: EV battery case
+    direction: energy
+    status: published
+    period: 2024
+    page: /projects/3_battery_case/
+    summary: Compared a sheet-metal case and a composite (SMC) case for an electric-vehicle battery, to see how each handles heat and sudden temperature changes.
+    role: First author of the journal paper (2024).
+    skills: [Thermal FEM, Validation, UN/ECE R100 testing]
+
+  - id: solar
+    label: Solar panel CFD
+    direction: energy
+    status: planned
+    period: Planned for 2027
+    summary: A planned computer study (CFD) on photovoltaic solar panels.
+    role: Will lead the study.
+    skills: [CFD]
+
+  - id: lift
+    label: Scissor lift for Bosch
+    direction: industry
+    status: published
+    period: Mertay Makina · delivered
+    page: /projects/2_scissor_lift/
+    summary: Designed a double scissor lift for a Bosch assembly line, from the first concept to two units delivered to the client.
+    role: Led the development. Mechanism layout, strength checks, hydraulic sizing and work with the client's engineers.
+    skills: [ANSYS Workbench, Abaqus, Hydraulic sizing, Design for manufacture]
+
+  - id: liftsteel
+    label: Choosing lift steel
+    direction: industry
+    status: ongoing
+    period: 2025 to now
+    page: /projects/9_lift_steel/
+    summary: The steel for lift arms is often chosen by strength first and cost later. This study shows how a machine maker can choose the cheapest steel that is still safe and stiff enough.
+    role: Leads the project. Ran the simulations, built the calculation and cost models, and is writing the paper.
+    people: [Fahmi Faqih Montoya]
+    skills: [ANSYS Mechanical, MATLAB, Cost comparison, Eurocode]
+
+  - id: stair
+    label: Stair platform safety
+    direction: industry
+    status: published
+    period: 2025
+    page: /projects/4_stair_platform/
+    summary: Mobile maintenance stairs can tip over when they are not docked. This study finds the load at which that happens, as a basis for safe design limits.
+    role: First author of the conference paper (2025).
+    skills: [Rigid-body dynamics, Stability analysis]
+
+  - id: armor
+    label: Armor steel impact
+    direction: safety
+    status: ongoing
+    period: Ongoing
+    page: /projects/7_armor_impact/
+    summary: Choosing an armor plate usually takes many costly firing tests. We simulate bullets hitting standard military armor steels, checked against published tests, to compare plates before live testing.
+    role: Leads the project. Built the material models, runs the impact simulations and wrote the analysis scripts.
+    people: [Desi Gustiani]
+    skills: [LS-DYNA, High-speed impact FEM, Material model calibration, MATLAB]
+
+  - id: coatings
+    label: Coatings and armor (UMS)
+    direction: safety
+    status: published
+    period: 2018 to 2023
+    page: /projects/5_coatings_ballistics/
+    summary: Earlier finite element work at Universitas Muhammadiyah Surakarta. Stress inside hard TiN coatings, armor against projectiles, and creep in boiler pipes.
+    role: Co-author. The TiN coating study was my M.Eng. thesis.
+    skills: [Abaqus, ANSYS, Residual stress, Ballistic FEM]

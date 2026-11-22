@@ -8,5 +8,8 @@ const posts = await allPosts();
 ---
 <Base title="Blog" description="Notes on research, talks and engineering.">
   <PageHead title="Blog" lead="Notes on research, talks and engineering." />
-  <div class="page-body"><div class="wrap"><PostList posts={posts} /></div></div>
+  <div class="page-body"><div class="wrap">
+    <p class="meta" style="margin:0 0 24px">Short updates are under <a href="/news/">News</a>, and past talks under <a href="/talks/">Talks</a>.</p>
+    <PostList posts={posts} />
+  </div></div>
 </Base>

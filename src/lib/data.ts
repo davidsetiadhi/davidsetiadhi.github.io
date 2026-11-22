@@ -13,16 +13,22 @@ export const metrics = readYaml<{
 export const contact = readYaml<{ email: string }>('contact.yml');
 export const socials = readYaml<Record<string, string | boolean>>('socials.yml');
 export const cv = readYaml<any>('cv.yml');
-type Person = { name: string; affiliations: string[]; orcid?: string; photo?: string };
+type Person = { name: string; affiliations: string[]; orcid?: string; photo?: string; focus?: string };
 export const people = readYaml<{ team: Person[]; collaborators: Person[] }>('people.yml');
+export type Direction = { id: string; label: string; hue: string; why: string; next: string };
+export type Project = {
+  id: string; label: string; direction: string; status: 'published' | 'ongoing' | 'planned'; period: string;
+  page?: string; summary: string; role: string; people?: string[]; with?: string[]; skills?: string[];
+};
+export const research = readYaml<{ directions: Direction[]; links: { from: string; to: string; label: string }[]; projects: Project[] }>('research.yml');
 export const initials = (name: string) => name.split(/\s+/).filter(Boolean).map((w) => w[0]).slice(0, 2).join('').toUpperCase();
 
 export const SITE = {
   name: 'Davestia Lab',
   author: 'David Setiadhi',
-  tagline: 'Gas transport, sterilization and machine design, from model to measurement.',
+  tagline: 'David Setiadhi, mechanical engineer',
   description:
-    'Davestia Lab is run by David Setiadhi, a mechanical engineer working between simulation and the test bench. PhD candidate at Bursa Uludağ University and R&D Engineer at Mertay Makina.',
+    'David Setiadhi is a mechanical engineer who uses computer models and lab tests to answer practical questions in health, energy, safety, industry and the environment. PhD candidate at Bursa Uludağ University and R&D Engineer at Mertay Makina.',
   orcid: '0000-0002-1765-1294',
 };
 
@@ -36,10 +42,8 @@ export const NAV = [
   { href: '/projects/', label: 'Research' },
   { href: '/publications/', label: 'Publications' },
   { href: '/tools/', label: 'Tools' },
-  { href: '/news/', label: 'News' },
-  { href: '/talks/', label: 'Talks' },
+  { href: '/people/', label: 'Team' },
   { href: '/posts/', label: 'Blog' },
-  { href: '/people/', label: 'People' },
   { href: '/cv/', label: 'CV' },
 ];
 
