@@ -87,7 +87,7 @@ const short = (aff: string) => aff.replace(/^Department of /, '').replace(/, Tü
       <ol class="pubs">{selected.map((p) => <PubItem pub={p} />)}</ol>
       <p class="meta" style="margin-top:16px">
         {metrics.works} indexed works and {metrics.citations} citations on <a href={metrics.openalex_url}>OpenAlex</a> ({fmtDate(new Date(metrics.updated), { day: 'numeric', month: 'short', year: 'numeric' })}).
-        <a href="/publications/">All publications, including conference papers</a>
+        <a class="more" href="/publications/">All publications, including conference papers</a>
       </p>
     </div>
   </section>
@@ -97,7 +97,7 @@ const short = (aff: string) => aff.replace(/^Department of /, '').replace(/, Tü
       <div>
         <h2>Engineering tools</h2>
         <p>Free calculators for everyday engineering checks. Each one shows its equations, limits and references, so the result can be checked by hand.</p>
-        <a class="btn btn-line" href="/tools/">Open the tools</a>
+        <a class="more" href="/tools/">Open the tools</a>
       </div>
       <ul class="tools">
         {tools.map((t) => <li><a href={`/tools/${t.id}/`}>{t.data.title}</a></li>)}
@@ -109,7 +109,7 @@ const short = (aff: string) => aff.replace(/^Department of /, '').replace(/, Tü
     <div class="wrap">
       <h2>News</h2>
       <ul class="news">{news.map((n) => <NewsItem item={n} />)}</ul>
-      <p class="meta" style="margin-top:16px"><a href="/news/">All news</a> · <a href="/talks/">Talks</a> · <a href="/posts/">Blog</a></p>
+      <p class="meta" style="margin-top:16px"><a class="more" href="/news/">All news</a> · <a href="/talks/">Talks</a> · <a href="/posts/">Blog</a></p>
     </div>
   </section>
 

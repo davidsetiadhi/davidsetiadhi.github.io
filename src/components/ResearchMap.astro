@@ -17,6 +17,14 @@ const slug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(
 const everyone = [...people.team.map((p) => ({ ...p, group: 'team' })), ...people.collaborators.map((p) => ({ ...p, group: 'collaborator' }))];
 const personBy = Object.fromEntries(everyone.map((p) => [p.name, p]));
 
+const directionIcons = [
+  'M9 3h6v6h6v6h-6v6H9v-6H3V9h6Z',
+  'M20 4C10 3 3 8 5 15c2 7 14 5 15-11ZM5 20l10-10',
+  'M13 2 4 14h7l-1 8 10-12h-7Z',
+  'M3 21V10l6 4V9l6 4V3h5v18ZM7 17h1m4 0h1m4 0h1',
+  'M12 2 3 6v6c0 5 9 10 9 10s9-5 9-10V6ZM8 12l3 3 5-6',
+];
+const directionIcon = (id: string) => '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="' + directionIcons[directions.findIndex(d => d.id === id)] + '" /></svg>';
 const dirs = directions.map((d, i) => {
   const angle = -90 + (360 / directions.length) * i;
   const items = projects.filter((p) => p.direction === d.id);
@@ -40,7 +48,7 @@ const dirKeys = (d: (typeof dirs)[number]) => [d.id, ...d.items.map((p) => p.id)
 const projKeys = (n: (typeof nodes)[number]) => [n.id, n.direction, ...n.people.map(pkey)];
 const statusText = { published: 'Published', ongoing: 'Ongoing', planned: 'Planned' } as const;
 const face = (name: string) => personBy[name];
-const chevron = '<svg viewBox="0 0 8 14" width="8" height="14" aria-hidden="true"><path d="M1 1l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const chevron = '<svg viewBox="0 0 8 14" width="8" height="14" aria-hidden="true"><path d="M1 1l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 ---
 <div class="rmap" data-rmap>
   <div class="rmap-stage">
@@ -118,7 +126,7 @@ const chevron = '<svg viewBox="0 0 8 14" width="8" height="14" aria-hidden="true
         {dirs.map((d) => (
           <li>
             <button type="button" class="row" data-select={d.id} style={`--hue:${d.hue}`}>
-              <span class="ico" aria-hidden="true"></span>
+              <span class="ico" aria-hidden="true" set:html={directionIcon(d.id)} />
               <span class="row-text"><b>{d.label}</b><small>{d.why}</small></span>
               <span class="chev" set:html={chevron} />
             </button>
@@ -130,7 +138,7 @@ const chevron = '<svg viewBox="0 0 8 14" width="8" height="14" aria-hidden="true
     {dirs.map((d) => (
       <article data-panel={d.id} hidden>
         <button type="button" class="back" data-select="overview"><span set:html={chevron} />All areas</button>
-        <h3 class="rp-title" style={`--hue:${d.hue}`}><span class="ico" aria-hidden="true"></span>{d.label}</h3>
+        <h3 class="rp-title" style={`--hue:${d.hue}`}><span class="ico" aria-hidden="true" set:html={directionIcon(d.id)} />{d.label}</h3>
         <dl class="facts">
           <div><dt>Why it matters</dt><dd>{d.why}</dd></div>
           <div><dt>Where it is going</dt><dd>{d.next}</dd></div>
@@ -214,7 +222,7 @@ const chevron = '<svg viewBox="0 0 8 14" width="8" height="14" aria-hidden="true
   <div class="rmap-list">
     {dirs.map((d, i) => (
       <details open={i === 0} style={`--hue:${d.hue}`}>
-        <summary><span class="ico" aria-hidden="true"></span><span class="row-text"><b>{d.label}</b><small>{d.why}</small></span><span class="chev" set:html={chevron} /></summary>
+        <summary><span class="ico" aria-hidden="true" set:html={directionIcon(d.id)} /><span class="row-text"><b>{d.label}</b><small>{d.why}</small></span><span class="chev" set:html={chevron} /></summary>
         <div class="rl-body">
           <p><strong>Where it is going.</strong> {d.next}</p>
           <ul>
@@ -272,14 +280,13 @@ const chevron = '<svg viewBox="0 0 8 14" width="8" height="14" aria-hidden="true
   /* iOS-like system values, mapped onto the site palette. */
   .rmap {
     --ease: cubic-bezier(0.22, 1, 0.36, 1);
-    --label: #1c2433;
-    --label-2: rgba(60, 67, 82, 0.72);
-    --fill: rgba(118, 128, 148, 0.12);
-    --sep: rgba(60, 67, 82, 0.14);
-    --card: #ffffff;
+    --label: var(--ink);
+    --label-2: var(--secondary);
+    --fill: var(--raised);
+    --sep: var(--rule);
+    --card: var(--panel);
     display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(320px, 1fr); gap: 48px; align-items: start;
   }
-  :global(:root[data-theme='dark']) .rmap { --label: #eef2f8; --label-2: rgba(226, 232, 242, 0.68); --fill: rgba(160, 175, 200, 0.16); --sep: rgba(226, 232, 242, 0.14); --card: #10233f; }
 
   .rmap-canvas { position: relative; aspect-ratio: 1200 / 1060; }
   .rmap svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
@@ -292,8 +299,8 @@ const chevron = '<svg viewBox="0 0 8 14" width="8" height="14" aria-hidden="true
   .n-center { width: 11.5%; aspect-ratio: 1; border-radius: 50%; overflow: hidden; box-shadow: 0 0 0 5px var(--card), 0 12px 30px rgba(15, 30, 60, 0.18); transition: transform 0.4s var(--ease), box-shadow 0.4s var(--ease); }
   .n-center:hover { transform: translate(-50%, -50%) scale(1.04); }
   .n-center img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .n-dir { padding: 9px 16px; border-radius: 999px; white-space: nowrap; font-weight: 600; font-size: 15px; color: var(--hue); background: color-mix(in srgb, var(--hue) 11%, var(--card)); box-shadow: 0 1px 2px rgba(15, 30, 60, 0.06), 0 4px 14px rgba(15, 30, 60, 0.06); transition: transform 0.35s var(--ease), background 0.25s ease, color 0.25s ease, opacity 0.35s var(--ease); }
-  .n-dir:hover, .n-dir.sel { background: var(--hue); color: #fff; transform: translate(-50%, -50%) scale(1.04); }
+  .n-dir { padding: 9px 16px; border-radius: 999px; white-space: nowrap; font-weight: 600; font-size: 15px; color: var(--label); background: color-mix(in srgb, var(--hue) 11%, var(--card)); box-shadow: 0 1px 2px rgba(15, 30, 60, 0.06), 0 4px 14px rgba(15, 30, 60, 0.06); transition: transform 0.35s var(--ease), background 0.25s ease, color 0.25s ease, opacity 0.35s var(--ease); }
+  .n-dir:hover, .n-dir.sel { background: var(--primary); color: #fff; transform: translate(-50%, -50%) scale(1.04); }
   .n-proj { display: flex; align-items: center; gap: 9px; text-align: left; }
   .n-proj .dot { flex: none; width: 13px; height: 13px; border-radius: 50%; background: var(--hue); box-shadow: 0 0 0 3px var(--card), 0 2px 6px rgba(15, 30, 60, 0.2); transition: transform 0.35s var(--ease); }
   .n-proj.st-planned .dot { background: var(--card); box-shadow: inset 0 0 0 2px var(--hue), 0 0 0 3px var(--card); }
@@ -304,7 +311,7 @@ const chevron = '<svg viewBox="0 0 8 14" width="8" height="14" aria-hidden="true
   .n-proj.side-t { transform: translate(-50%, calc(-100% + 6px)); flex-direction: column-reverse; text-align: center; gap: 5px; }
   .n-proj.side-b { transform: translate(-50%, -6px); flex-direction: column; text-align: center; gap: 5px; }
   .n-proj:hover .dot, .n-proj.sel .dot, .n-proj:focus-visible .dot { transform: scale(1.35); }
-  .n-proj:hover .lbl, .n-proj.sel .lbl { color: var(--hue); }
+  .n-proj:hover .lbl, .n-proj.sel .lbl { color: var(--cobalt); }
   .n-proj.sel .lbl { font-weight: 600; }
   .link-lbl { position: absolute; transform: translate(-50%, -50%); font: 500 12px var(--display); color: var(--teal); white-space: nowrap; transition: opacity 0.35s var(--ease); }
 
@@ -316,30 +323,31 @@ const chevron = '<svg viewBox="0 0 8 14" width="8" height="14" aria-hidden="true
   .rmap-people h3 { font-size: 13px; font-weight: 600; color: var(--label-2); text-transform: none; margin: 0 0 10px; letter-spacing: 0; }
   .rmap-people ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
   .chip-person { position: static; transform: none; display: flex; align-items: center; gap: 8px; padding: 4px 14px 4px 4px; border-radius: 999px; font-size: 14px; background: var(--fill); transition: background 0.25s ease, color 0.25s ease, opacity 0.35s var(--ease); }
-  .chip-person:hover, .chip-person.sel { background: var(--cobalt); color: #fff; }
+  .chip-person:hover, .chip-person.sel { background: var(--primary); color: #fff; }
   .chip-person img { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; }
   .ini { display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--card); color: var(--navy); font: 700 11px var(--display); flex: none; box-shadow: inset 0 0 0 1px var(--sep); }
   .ini.big { width: 64px; height: 64px; font-size: 20px; border-radius: 16px; }
 
   /* Detail card */
-  .rmap-panel { position: sticky; top: 92px; background: var(--card); border-radius: 22px; padding: 22px 22px 24px; box-shadow: 0 1px 2px rgba(15, 30, 60, 0.05), 0 18px 40px rgba(15, 30, 60, 0.09); border: 1px solid var(--sep); min-height: 420px; }
+  .rmap-panel { position: sticky; top: 76px; background: var(--card); border-radius: 18px; padding: 22px 22px 24px; box-shadow: var(--sh-card); border: 0; min-height: 420px; }
   .rmap-panel article.enter { animation: rm-in 0.32s var(--ease); }
   @keyframes rm-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
   .rmap-panel h3 { font-size: 24px; font-weight: 700; letter-spacing: -0.025em; margin: 0 0 8px; color: var(--label); }
   .rmap-panel p { font-size: 15.5px; line-height: 1.55; margin: 0 0 14px; color: var(--label); }
   .rp-lead { color: var(--label-2) !important; }
   .rp-title { display: flex; align-items: center; gap: 10px; }
-  .ico { flex: none; width: 30px; height: 30px; border-radius: 8px; background: radial-gradient(circle, #fff 0 4px, transparent 4.5px), var(--hue); box-shadow: 0 1px 3px rgba(15, 30, 60, 0.15); }
+  .ico { display: inline-grid; place-items: center; flex: none; width: 30px; height: 30px; border-radius: 8px; background: color-mix(in srgb, var(--cobalt) 8%, var(--card)); color: var(--cobalt); }
+  .ico :global(svg) { position: static; width: 21px; height: 21px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
   .ico.small { width: 10px; height: 10px; border-radius: 50%; background: var(--hue); box-shadow: none; margin: 0 4px; }
   .back { display: inline-flex; align-items: center; gap: 6px; background: none; border: 0; padding: 4px 0; margin: -4px 0 8px; font: 500 15px var(--display); color: var(--cobalt); cursor: pointer; }
   .back :global(svg) { transform: scaleX(-1); }
-  .back:hover { opacity: 0.7; }
+  .back:hover { text-decoration: underline; }
   .rp-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; font: 500 14px var(--display) !important; color: var(--label-2) !important; }
   .rp-aff { color: var(--label-2) !important; font-size: 14.5px !important; }
   .cap { display: inline-block; font: 600 12px/1 var(--display); padding: 5px 9px; border-radius: 999px; background: color-mix(in srgb, currentColor 13%, transparent); white-space: nowrap; }
   .cap.st-published { color: var(--teal); }
   .cap.st-ongoing { color: var(--cobalt); }
-  .cap.st-planned { color: #6b7280; }
+  .cap.st-planned { color: var(--secondary); }
 
   .facts { margin: 0 0 16px; background: var(--fill); border-radius: 14px; padding: 4px 14px; }
   .facts div { padding: 10px 0; }
@@ -359,9 +367,9 @@ const chevron = '<svg viewBox="0 0 8 14" width="8" height="14" aria-hidden="true
   .row-text { flex: 1; min-width: 0; display: grid; gap: 2px; }
   .row-text b { font-weight: 600; }
   .row-text small { font: 400 13.5px/1.4 var(--display); color: var(--label-2); }
-  .chev { flex: none; color: rgba(60, 67, 82, 0.35); display: inline-flex; }
-  .pill { display: inline-flex; align-items: center; justify-content: center; width: 100%; padding: 13px 18px; border-radius: 14px; background: var(--cobalt); color: #fff; font: 600 15.5px var(--display); text-decoration: none; transition: transform 0.2s var(--ease), opacity 0.2s ease; }
-  .pill:hover { opacity: 0.9; }
+  .chev { flex: none; color: var(--muted); display: inline-flex; }
+  .pill { display: inline-flex; align-items: center; justify-content: center; width: 100%; padding: 13px 18px; border-radius: 980px; background: var(--primary); color: #fff; font: 600 15.5px var(--display); text-decoration: none; transition: transform 0.2s var(--ease), opacity 0.2s ease; }
+  .pill:hover { background: var(--primary-hover); color: #fff; }
   .pill:active { transform: scale(0.98); }
   .rp-face { display: flex; gap: 14px; align-items: center; margin-bottom: 10px; }
   .rp-face img { width: 64px; height: 64px; border-radius: 16px; object-fit: cover; }
@@ -370,7 +378,7 @@ const chevron = '<svg viewBox="0 0 8 14" width="8" height="14" aria-hidden="true
 
   /* Small screens: grouped list */
   .rmap-list { display: none; }
-  .rmap-list details { background: var(--card); border: 1px solid var(--sep); border-radius: 16px; margin-bottom: 10px; overflow: hidden; }
+  .rmap-list details { background: var(--card); border: 0; border-radius: 18px; margin-bottom: 10px; overflow: hidden; }
   .rmap-list summary { list-style: none; display: flex; align-items: center; gap: 12px; padding: 14px; cursor: pointer; }
   .rmap-list summary::-webkit-details-marker { display: none; }
   .rmap-list summary .chev { transition: transform 0.3s var(--ease); }
@@ -385,6 +393,14 @@ const chevron = '<svg viewBox="0 0 8 14" width="8" height="14" aria-hidden="true
   .rl-sum { font-size: 15px; line-height: 1.5; }
   .rl-who { font: 500 13px var(--display); color: var(--label-2); }
 
+  /* Hues remain decorative; direction labels and focus use accessible system colors. */
+  @media (prefers-color-scheme: dark) {
+    :global(:root:not([data-theme='light'])) .rmap :is(.dot, .ln) { filter: brightness(1.35); }
+  }
+  :global(:root[data-theme='dark']) .rmap :is(.dot, .ln) { filter: brightness(1.35); }
+  .cap, .row-text small { color: var(--secondary); }
+  .cap { background: transparent; }
+  .n:focus-visible, .row:focus-visible { outline: 4px solid var(--ring); outline-offset: 4px; }
   @media (max-width: 1180px) { .n-proj .lbl { max-width: 120px; } .n-proj { font-size: 13.5px; } .n-dir { font-size: 13.5px; padding: 7px 13px; } }
   @media (max-width: 900px) {
     .rmap { display: block; }
@@ -394,5 +410,6 @@ const chevron = '<svg viewBox="0 0 8 14" width="8" height="14" aria-hidden="true
   @media (prefers-reduced-motion: reduce) {
     .ln, .n, .n-dir, .n-center, .ln-link path, .link-lbl, .n-proj .dot, .row, .pill { transition: none; }
     .rmap-panel article.enter { animation: none; }
+    .chip-person, .rmap-list summary .chev { transition: none; }
   }
 </style>
