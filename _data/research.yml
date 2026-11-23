@@ -60,6 +60,7 @@ projects:
     page: /projects/1_ozone_chamber/
     summary: Hospitals clean heat-sensitive tools with ozone gas, but a single sensor reads the dose at one spot only. I study how the gas moves and breaks down inside the chamber, so that every surface gets enough.
     role: Designed and built the prototype chamber, ran the tests, wrote the models and ran the computer simulations (CFD).
+    people: [Wan Hafizh Zulfikar]
     with: [Prof. Dr. Kadir Çavdar, PhD supervisor]
     skills: [ANSYS Fluent CFD, Python, Prototype build, Sensors and data logging]
 
