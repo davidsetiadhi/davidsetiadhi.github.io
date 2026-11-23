@@ -328,7 +328,7 @@ footer.site nav a:hover { color: var(--ink); }
 @media (max-width: 1000px) {
   .toolbar { position: static; }
   .nav { position: absolute; top: 100%; left: 0; right: 0; width: 100%; max-height: calc(100dvh - 52px); overflow-y: auto; flex-direction: column; align-items: stretch; gap: 4px; padding: 24px max(16px, calc((100vw - var(--wrap)) / 2 + 24px)) 32px; border-radius: 0; font-size: 28px;
-    background: color-mix(in srgb, var(--paper) 96%, transparent); -webkit-backdrop-filter: saturate(180%) blur(20px); backdrop-filter: saturate(180%) blur(20px); border-bottom: 1px solid var(--rule);
+    background: var(--paper); border-bottom: 1px solid var(--rule); box-shadow: 0 100vh 0 100vh rgba(0, 0, 0, 0.35);
     opacity: 0; visibility: hidden; transform: translateY(-12px); transition: opacity 0.25s var(--ease), transform 0.25s var(--ease), visibility 0s 0.25s; }
   .nav.open { opacity: 1; visibility: visible; transform: none; transition: opacity 0.25s var(--ease), transform 0.25s var(--ease); }
   .nav a { padding: 8px 4px; font-weight: 500; }
