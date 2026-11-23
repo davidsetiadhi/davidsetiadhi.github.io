@@ -26,6 +26,7 @@ Ongoing since 2026. Results will appear after the first paper is published.
 #### People
 
 - Fatih Rahman Hermawan: checks the collected values against the original papers.
+- Fadhil Arrahman: works on the project as a team member.
 - David Setiadhi: leads the project, designed the study and builds the model.
 
 The work is done with Bursa Uludağ University's Faculty of Dentistry; the names of the advisors will be added here.

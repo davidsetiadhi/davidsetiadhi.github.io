@@ -49,7 +49,7 @@ projects:
     page: /projects/8_dental_restoration/
     summary: A filling can come loose or crack when its bond to the tooth is weak. I am building a computer model of a filled tooth, fed by data checked against published studies, so that options can be compared without testing on real teeth.
     role: Leads the project. Designed the study, builds the simulation model, and set up how the data is collected and checked.
-    people: [Fatih Rahman Hermawan]
+    people: [Fatih Rahman Hermawan, Fadhil Arrahman]
     skills: [ANSYS Workbench, SolidWorks, Python, Systematic review]
 
   - id: ozone
