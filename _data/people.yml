@@ -7,6 +7,7 @@ team:
     affiliations:
       - Department of Environmental Engineering, Bursa Uludağ University, Türkiye
     orcid: 0009-0001-6897-2215
+    photo: /assets/img/people/wan-hafizh-zulfikar.jpg
     focus: Engine tests and analysis, and the soil cleanup review.
   - name: Fatih Rahman Hermawan
     affiliations:
@@ -18,6 +19,11 @@ team:
       - Department of International Trade and Logistics, Bursa Technical University, Türkiye
     orcid: 0009-0008-4266-3415
     focus: Checks the calculation and cost workbook in the lift steel study.
+  - name: Fadhil Arrahman
+    affiliations:
+      - Department of Mechanical Engineering, Bursa Uludağ University, Türkiye
+    orcid: 0009-0008-7139-7099
+    photo: /assets/img/people/fadhil-arrahman.jpg
 collaborators:
   - name: Apri Wiyono
     affiliations:

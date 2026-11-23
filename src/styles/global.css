@@ -143,6 +143,7 @@ a:hover { color: var(--link-hover); }
 .team { background: var(--ice); }
 .team-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 32px; }
 .member img, .member-ph { display: grid; place-items: center; width: 140px; height: 140px; border-radius: 14px; object-fit: cover; background: var(--panel); box-shadow: var(--sh-card); font: 700 34px var(--display); color: var(--navy); margin-bottom: 14px; }
+.member-ph { background: color-mix(in srgb, var(--cobalt) 12%, var(--panel)); color: var(--cobalt); }
 .member h3 { font-size: 18px; margin: 0 0 2px; }
 .member p { font-size: 16px; margin: 6px 0 6px; }
 .member .meta { text-decoration: none; }
