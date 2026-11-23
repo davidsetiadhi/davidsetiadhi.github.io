@@ -324,10 +324,10 @@
 
   // Live schematics: scene.params(v, r) -> numbers (tweened between inputs), scene.draw(p, phase) -> SVG markup.
   // `loop` (ms) adds a repeating time sweep for processes that unfold over time (ozone in a chamber).
-  var C_NAVY = "#061f3e", C_TEAL = "#0f766e", C_O3 = "#3d63c8", C_AMB = "#f2a900", C_WARN = "#c2410c", C_GRID = "#dbe3ec";
+  var C_NAVY = "var(--ink)", C_TEAL = "var(--cobalt)", C_O3 = "var(--cobalt)", C_AMB = "var(--cobalt)", C_WARN = "var(--warn)", C_GRID = "var(--rule)";
   function t(x, y, s, o) {
     o = o || {};
-    return '<text x="' + x + '" y="' + y + '"' + (o.a ? ' text-anchor="' + o.a + '"' : "") + ' font-size="' + (o.s || 13) + '" font-weight="' + (o.w || 500) + '" fill="' + (o.c || "#334155") + '">' + esc(s) + "</text>";
+    return '<text x="' + x + '" y="' + y + '"' + (o.a ? ' text-anchor="' + o.a + '"' : "") + ' font-size="' + (o.s || 13) + '" font-weight="' + (o.w || 500) + '" fill="' + (o.c || "var(--ink)") + '">' + esc(s) + "</text>";
   }
   function arrow(x1, y1, x2, y2, c, w) {
     var a = Math.atan2(y2 - y1, x2 - x1), h = 7 + (w || 2) * 1.5;
@@ -345,7 +345,7 @@
   function chamber(x, y, w, h, level, label) {
     var n = Math.round(clamp(level, 0, 1) * DOTS.length), g = '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="14" fill="' + C_O3 + '" fill-opacity="' + (0.04 + 0.22 * clamp(level, 0, 1)).toFixed(3) + '" stroke="' + C_NAVY + '" stroke-width="2.5"/>';
     for (var i = 0; i < n; i++) g += '<circle cx="' + (x + DOTS[i][0] * w).toFixed(1) + '" cy="' + (y + DOTS[i][1] * h).toFixed(1) + '" r="3.2" fill="' + C_O3 + '"/>';
-    return g + (label ? t(x + w / 2, y + h + 22, label, { a: "middle", s: 12.5, c: "#64748b" }) : "");
+    return g + (label ? t(x + w / 2, y + h + 22, label, { a: "middle", s: 12.5, c: "var(--secondary)" }) : "");
   }
 
   CALCS["beam-deflection"].scene = {
@@ -359,15 +359,15 @@
       var x0 = 90, x1 = 550, y = 105, L = x1 - x0, cant = p.cas.indexOf("cant") === 0, g = "";
       var shape = function (u) { return beamY(p.cas, 1, 1, 1, u); }, mx = shape(cant ? 1 : 0.5) || 1;
       var pts = []; for (var i = 0; i <= 60; i++) { var u = i / 60; pts.push([x0 + u * L, y + (p.amp * shape(u)) / mx]); }
-      if (cant) g += '<rect x="' + (x0 - 26) + '" y="' + (y - 60) + '" width="26" height="120" fill="#e2e8f0" stroke="' + C_NAVY + '" stroke-width="2"/>';
-      else g += '<path d="M' + x0 + " " + (y + 9) + "l-14 26h28z M" + x1 + " " + (y + 9) + 'l-14 26h28z" fill="#e2e8f0" stroke="' + C_NAVY + '" stroke-width="2" stroke-linejoin="round"/>';
-      g += '<path d="M' + x0 + " " + y + "H" + x1 + '" stroke="#cbd5e1" stroke-width="12" stroke-dasharray="3 6"/>';
+      if (cant) g += '<rect x="' + (x0 - 26) + '" y="' + (y - 60) + '" width="26" height="120" fill="var(--raised)" stroke="' + C_NAVY + '" stroke-width="2"/>';
+      else g += '<path d="M' + x0 + " " + (y + 9) + "l-14 26h28z M" + x1 + " " + (y + 9) + 'l-14 26h28z" fill="var(--raised)" stroke="' + C_NAVY + '" stroke-width="2" stroke-linejoin="round"/>';
+      g += '<path d="M' + x0 + " " + y + "H" + x1 + '" stroke="var(--rule)" stroke-width="12" stroke-dasharray="3 6"/>';
       g += '<path d="' + pts.map(function (q, i) { return (i ? "L" : "M") + q[0].toFixed(1) + " " + q[1].toFixed(1); }).join("") + '" fill="none" stroke="' + C_NAVY + '" stroke-width="12" stroke-linecap="round"/>';
       if (p.cas.slice(-1) === "p") { var xp = cant ? x1 : (x0 + x1) / 2, yp = y + p.amp; g += arrow(xp, yp - 70, xp, yp - 12, C_AMB, 3); g += t(xp + 10, yp - 56, "Load", { c: C_NAVY, w: 600 }); }
       else { for (var j = 0; j <= 8; j++) { var u2 = j / 8, xa = x0 + u2 * L, ya = y + (p.amp * shape(u2)) / mx; g += arrow(xa, ya - 46, xa, ya - 12, C_AMB, 2); } g += t((x0 + x1) / 2, y - 60, "Uniform load", { a: "middle", c: C_NAVY, w: 600 }); }
       var xt = cant ? x1 : (x0 + x1) / 2;
       g += t(xt, y + p.amp + 34, fmt(p.d, 2) + " mm", { a: "middle", s: 15, w: 700, c: C_TEAL });
-      g += t(320, 228, "Deflection drawn larger than real, to show the shape", { a: "middle", s: 12, c: "#64748b" });
+      g += t(320, 228, "Deflection drawn larger than real, to show the shape", { a: "middle", s: 12, c: "var(--secondary)" });
       return g;
     },
   };
@@ -384,15 +384,15 @@
       g += '<rect x="' + xb + '" y="' + (cy - hb / 2) + '" width="' + (xp - xb) + '" height="' + hb + '" fill="' + C_AMB + '" fill-opacity="' + (0.15 + 0.6 * clamp(p.p / 350, 0, 1)).toFixed(2) + '"/>';
       g += '<rect x="' + xb + '" y="' + (cy - hb / 2) + '" width="' + (xe - xb) + '" height="' + hb + '" rx="6" fill="none" stroke="' + C_NAVY + '" stroke-width="3"/>';
       g += '<rect x="' + (xp - 8) + '" y="' + (cy - hb / 2 + 3) + '" width="16" height="' + (hb - 6) + '" fill="' + C_NAVY + '"/>';
-      g += '<rect x="' + xp + '" y="' + (cy - hr / 2) + '" width="' + (548 - xp) + '" height="' + hr + '" fill="#94a3b8" stroke="' + C_NAVY + '" stroke-width="2"/>';
-      g += '<circle cx="556" cy="' + cy + '" r="' + (hr / 2 + 6) + '" fill="#fff" stroke="' + C_NAVY + '" stroke-width="3"/>';
+      g += '<rect x="' + xp + '" y="' + (cy - hr / 2) + '" width="' + (548 - xp) + '" height="' + hr + '" fill="var(--muted)" stroke="' + C_NAVY + '" stroke-width="2"/>';
+      g += '<circle cx="556" cy="' + cy + '" r="' + (hr / 2 + 6) + '" fill="var(--panel)" stroke="' + C_NAVY + '" stroke-width="3"/>';
       var len = 24 + 24 * clamp(logMap(p.f, 1000), 0, 1);
       g += arrow(578, cy, 578 + len, cy, C_TEAL, 4) + t(626, cy - 18, fmt(p.f, 0) + " kN", { a: "end", s: 14, w: 700, c: C_TEAL });
       var off = (-ph * 40).toFixed(1);
       g += '<path d="M60 ' + (cy + hb / 2 + 34) + "H" + (xb + 30) + "V" + (cy + hb / 2) + '" fill="none" stroke="' + C_AMB + '" stroke-width="5" stroke-dasharray="10 10" stroke-dashoffset="' + off + '"/>';
-      g += t(60, cy + hb / 2 + 56, "Oil at " + fmt(p.p, 0) + " bar", { s: 12.5, c: "#64748b" });
+      g += t(60, cy + hb / 2 + 56, "Oil at " + fmt(p.p, 0) + " bar", { s: 12.5, c: "var(--secondary)" });
       g += t((xb + xe) / 2, cy - hb / 2 - 12, "Bore " + p.bore + " mm", { a: "middle", w: 600, c: C_NAVY });
-      g += t(470, cy + hr / 2 + 20, "Rod " + fmt(p.rod, 0) + " mm", { a: "middle", s: 12.5, c: "#64748b" });
+      g += t(470, cy + hr / 2 + 20, "Rod " + fmt(p.rod, 0) + " mm", { a: "middle", s: 12.5, c: "var(--secondary)" });
       return g;
     },
   };
@@ -405,20 +405,20 @@
     },
     draw: function (p) {
       var cx = 200, cy = 118, sw = 10 + 36 * clamp((p.d - 6) / 24, 0, 1), hw = sw * 1.7, g = "";
-      g += '<rect x="' + (cx - 8) + '" y="' + (cy - sw / 2) + '" width="230" height="' + sw + '" fill="#cbd5e1" stroke="' + C_NAVY + '" stroke-width="2"/>';
+      g += '<rect x="' + (cx - 8) + '" y="' + (cy - sw / 2) + '" width="230" height="' + sw + '" fill="var(--rule)" stroke="' + C_NAVY + '" stroke-width="2"/>';
       for (var i = 0; i < 12; i++) g += '<path d="M' + (cx + 110 + i * 10) + " " + (cy - sw / 2) + "l6 " + sw + '" stroke="' + C_NAVY + '" stroke-width="1.3"/>';
       g += '<rect x="' + (cx - 34) + '" y="' + (cy - hw / 2) + '" width="30" height="' + hw + '" rx="3" fill="' + C_NAVY + '"/>';
       var arc = (40 + 260 * logMap(p.torque, 3000)) * Math.PI / 180, R = hw / 2 + 22, a0 = -Math.PI / 2;
       var ax = cx - 19 + R * Math.cos(a0 + arc), ay = cy + R * Math.sin(a0 + arc);
       g += '<path d="M' + (cx - 19) + " " + (cy - R) + "A" + R + " " + R + " 0 " + (arc > Math.PI ? 1 : 0) + " 1 " + ax.toFixed(1) + " " + ay.toFixed(1) + '" fill="none" stroke="' + C_AMB + '" stroke-width="5" stroke-linecap="round"/>';
       g += arrow(ax - 6 * Math.cos(a0 + arc + Math.PI / 2), ay - 6 * Math.sin(a0 + arc + Math.PI / 2), ax, ay, C_AMB, 5);
-      g += t(cx - 19, cy - R - 14, fmt(p.torque, 0) + " N·m", { a: "middle", s: 15, w: 700, c: "#92400e" });
+      g += t(cx - 19, cy - R - 14, fmt(p.torque, 0) + " N·m", { a: "middle", s: 15, w: 700, c: "var(--warn)" });
       var gx = 470, gy = 50, gh = 130, f = clamp(p.frac / 100, 0, 1);
-      g += '<rect x="' + gx + '" y="' + gy + '" width="26" height="' + gh + '" rx="13" fill="#eef2f7" stroke="' + C_GRID + '"/>';
+      g += '<rect x="' + gx + '" y="' + gy + '" width="26" height="' + gh + '" rx="13" fill="var(--raised)" stroke="' + C_GRID + '"/>';
       g += '<rect x="' + gx + '" y="' + (gy + gh * (1 - f)) + '" width="26" height="' + gh * f + '" rx="13" fill="' + (p.frac > 90 ? C_WARN : C_TEAL) + '"/>';
       g += '<path d="M' + (gx - 6) + " " + (gy + gh * 0.1) + "h38" + '" stroke="' + C_WARN + '" stroke-dasharray="4 3"/>';
-      g += t(gx + 40, gy + gh * 0.1 + 4, "90%", { s: 12, c: C_WARN }) + t(gx + 13, gy + gh + 22, fmt(p.pre, 1) + " kN preload", { a: "middle", s: 12.5, c: "#334155", w: 600 });
-      g += t(cx + 100, cy + sw / 2 + 28, "M" + fmt(p.d, 0) + " bolt", { a: "middle", s: 12.5, c: "#64748b" });
+      g += t(gx + 40, gy + gh * 0.1 + 4, "90%", { s: 12, c: C_WARN }) + t(gx + 13, gy + gh + 22, fmt(p.pre, 1) + " kN preload", { a: "middle", s: 12.5, c: "var(--ink)", w: 600 });
+      g += t(cx + 100, cy + sw / 2 + 28, "M" + fmt(p.d, 0) + " bolt", { a: "middle", s: 12.5, c: "var(--secondary)" });
       return g;
     },
   };
@@ -433,9 +433,9 @@
       var Ex = 420, Ey = 205, deg = (p.th * 180) / Math.PI, s = p.s, g = "";
       g += '<path d="M60 ' + Ey + 'H600" stroke="' + C_GRID + '" stroke-width="2" stroke-dasharray="4 5"/>';
       g += '<g transform="rotate(' + deg.toFixed(2) + " " + Ex + " " + Ey + ')">';
-      g += '<path d="M120 ' + Ey + 'H560" stroke="#94a3b8" stroke-width="4"/>';
+      g += '<path d="M120 ' + Ey + 'H560" stroke="var(--muted)" stroke-width="4"/>';
       var w = 2 * p.b1 * s, hgt = 2 * p.h1 * s;
-      g += '<rect x="' + (Ex - w) + '" y="' + (Ey - hgt) + '" width="' + w + '" height="' + hgt + '" fill="#e2e8f0" stroke="' + C_NAVY + '" stroke-width="2.5"/>';
+      g += '<rect x="' + (Ex - w) + '" y="' + (Ey - hgt) + '" width="' + w + '" height="' + hgt + '" fill="var(--raised)" stroke="' + C_NAVY + '" stroke-width="2.5"/>';
       for (var k = 1; k < 5; k++) g += '<path d="M' + (Ex - w) + " " + (Ey - (hgt * k) / 5) + "h" + w * (k / 5) + '" stroke="' + C_NAVY + '" stroke-width="1.5"/>';
       var px = Ex - p.b2 * s, py = Ey - p.h2 * s;
       g += '<circle cx="' + px + '" cy="' + (py - 34) + '" r="9" fill="' + C_NAVY + '"/><path d="M' + px + " " + (py - 24) + "v38M" + (px - 12) + " " + (py - 12) + "h24M" + px + " " + (py + 14) + "l-9 " + 20 + "M" + px + " " + (py + 14) + 'l9 20" stroke="' + C_NAVY + '" stroke-width="3.5" stroke-linecap="round" fill="none"/>';
@@ -443,11 +443,11 @@
       g += "</g>";
       var c = Math.cos(p.th), sn = Math.sin(p.th), rx = Ex + (gx - Ex) * c - (gy - Ey) * sn, ry = Ey + (gx - Ex) * sn + (gy - Ey) * c;
       g += '<path d="M' + rx.toFixed(1) + " " + ry.toFixed(1) + "V" + Ey + '" stroke="' + C_WARN + '" stroke-width="2" stroke-dasharray="5 4"/>';
-      g += '<circle cx="' + rx.toFixed(1) + '" cy="' + ry.toFixed(1) + '" r="8" fill="#fff" stroke="' + C_WARN + '" stroke-width="3"/><circle cx="' + Ex + '" cy="' + Ey + '" r="5" fill="' + C_WARN + '"/>';
+      g += '<circle cx="' + rx.toFixed(1) + '" cy="' + ry.toFixed(1) + '" r="8" fill="var(--panel)" stroke="' + C_WARN + '" stroke-width="3"/><circle cx="' + Ex + '" cy="' + Ey + '" r="5" fill="' + C_WARN + '"/>';
       g += t(rx + 14, ry - 6, "Centre of gravity", { s: 12.5, c: C_WARN, w: 600 });
       g += t(70, 40, "Tips over at a floor slope of " + fmt(deg, 1) + "°", { s: 15, w: 700, c: deg < 10 ? C_WARN : C_TEAL });
-      g += t(70, 60, "At this slope the centre of gravity sits", { s: 12, c: "#64748b" });
-      g += t(70, 77, "right above the tipping edge", { s: 12, c: "#64748b" });
+      g += t(70, 60, "At this slope the centre of gravity sits", { s: 12, c: "var(--secondary)" });
+      g += t(70, 77, "right above the tipping edge", { s: 12, c: "var(--secondary)" });
       return g;
     },
   };
@@ -460,8 +460,8 @@
       g += chamber(70, 40, 220, 150, p.c / 1000, fmt(p.c, 0) + " ppm in the chamber");
       var bx = 350, by = 90, bw = 230;
       g += t(bx, by - 18, "Dose so far: " + fmt(p.c * tt, 0) + " ppm·min", { s: 14, w: 700, c: C_NAVY });
-      g += '<rect x="' + bx + '" y="' + by + '" width="' + bw + '" height="18" rx="9" fill="#eef2f7"/><rect x="' + bx + '" y="' + by + '" width="' + (bw * dose).toFixed(1) + '" height="18" rx="9" fill="' + (dose >= 1 ? C_TEAL : C_O3) + '"/>';
-      g += t(bx, by + 44, fmt(tt, 1) + " min", { s: 13, c: "#334155", w: 600 }) + t(bx + bw, by + 44, dose >= 1 ? "Target reached" : "Target " + fmt(p.ct, 0), { a: "end", s: 13, c: dose >= 1 ? C_TEAL : "#64748b", w: 600 });
+      g += '<rect x="' + bx + '" y="' + by + '" width="' + bw + '" height="18" rx="9" fill="var(--raised)"/><rect x="' + bx + '" y="' + by + '" width="' + (bw * dose).toFixed(1) + '" height="18" rx="9" fill="' + (dose >= 1 ? C_TEAL : C_O3) + '"/>';
+      g += t(bx, by + 44, fmt(tt, 1) + " min", { s: 13, c: "var(--ink)", w: 600 }) + t(bx + bw, by + 44, dose >= 1 ? "Target reached" : "Target " + fmt(p.ct, 0), { a: "end", s: 13, c: dose >= 1 ? C_TEAL : "var(--secondary)", w: 600 });
       return g;
     },
   };
@@ -477,7 +477,7 @@
       var tt = ph * p.tEnd, c = p.c0 * Math.exp(-p.k * tt), open = p.cs > 0 && c <= p.cs, g = "";
       g += chamber(70, 40, 220, 150, Math.pow(c / p.c0, 0.5), fmt(c, c < 10 ? 2 : 0) + " ppm after " + fmt(tt, 0) + " min");
       var dx = 400, dy = 50;
-      g += '<rect x="' + dx + '" y="' + dy + '" width="90" height="130" rx="6" fill="#f8fafc" stroke="' + C_NAVY + '" stroke-width="2.5"/>';
+      g += '<rect x="' + dx + '" y="' + dy + '" width="90" height="130" rx="6" fill="var(--panel)" stroke="' + C_NAVY + '" stroke-width="2.5"/>';
       g += '<g transform="translate(' + dx + " " + dy + ") skewY(" + (open ? -12 : 0) + ") scale(" + (open ? 0.72 : 1) + ' 1)"><rect width="90" height="130" rx="6" fill="' + (open ? "#ccfbf1" : "#fee2e2") + '" stroke="' + C_NAVY + '" stroke-width="2.5"/><circle cx="74" cy="68" r="5" fill="' + C_NAVY + '"/></g>';
       g += t(dx + 45, dy + 156, open ? "Door may open" : "Keep the door closed", { a: "middle", s: 13.5, w: 700, c: open ? C_TEAL : C_WARN });
       return g;
@@ -494,11 +494,11 @@
     },
     draw: function (p, ph) {
       var tt = ph * p.tEnd, c = p.css * (1 - Math.exp(-p.k * tt)), top = Math.max(p.css, p.target, 1e-9) * 1.1, g = "";
-      g += '<rect x="40" y="95" width="44" height="40" rx="6" fill="' + C_TEAL + '"/>' + t(62, 120, "O₃", { a: "middle", s: 13, w: 700, c: "#fff" });
+      g += '<rect x="40" y="95" width="44" height="40" rx="6" fill="var(--primary)"/>' + t(62, 120, "O₃", { a: "middle", s: 13, w: 700, c: "#fff" });
       g += '<path d="M84 115H120" stroke="' + C_O3 + '" stroke-width="4" stroke-dasharray="6 6" stroke-dashoffset="' + (-ph * 120).toFixed(1) + '"/>';
       g += chamber(120, 40, 220, 150, c / top, fmt(c, 0) + " ppm after " + fmt(tt, 0) + " min");
       var gx = 420, gy = 40, gh = 150, Y = function (x) { return gy + gh * (1 - clamp(x / top, 0, 1)); };
-      g += '<rect x="' + gx + '" y="' + gy + '" width="24" height="' + gh + '" rx="12" fill="#eef2f7"/><rect x="' + gx + '" y="' + Y(c) + '" width="24" height="' + (gy + gh - Y(c)) + '" rx="12" fill="' + C_O3 + '"/>';
+      g += '<rect x="' + gx + '" y="' + gy + '" width="24" height="' + gh + '" rx="12" fill="var(--raised)"/><rect x="' + gx + '" y="' + Y(c) + '" width="24" height="' + (gy + gh - Y(c)) + '" rx="12" fill="' + C_O3 + '"/>';
       g += '<path d="M' + (gx - 6) + " " + Y(p.css) + "h36" + '" stroke="' + C_NAVY + '" stroke-width="2"/>' + t(gx + 40, Y(p.css) + 4, "steady state " + fmt(p.css, 0), { s: 12.5, c: C_NAVY });
       if (p.target > 0) g += '<path d="M' + (gx - 6) + " " + Y(p.target) + "h36" + '" stroke="' + C_WARN + '" stroke-width="2" stroke-dasharray="4 3"/>' + t(gx + 40, Y(p.target) + 4, "target " + fmt(p.target, 0), { s: 12.5, c: C_WARN });
       return g;
@@ -513,17 +513,17 @@
       return { ti: v.ti, to: v.to, tsi: n(2), tso: n(3), l1: v.l1, l2: v.l2, q: n(1) / Math.max(v.a, 1e-9) };
     },
     draw: function (p, ph) {
-      var lo = Math.min(p.ti, p.to), hi = Math.max(p.ti, p.to), col = function (T) { return mix("#3d63c8", "#e4572e", hi > lo ? clamp((T - lo) / (hi - lo), 0, 1) : 0.5); };
+      var lo = Math.min(p.ti, p.to), hi = Math.max(p.ti, p.to), col = function (T) { return mix("#0066cc", "#e4572e", hi > lo ? clamp((T - lo) / (hi - lo), 0, 1) : 0.5); };
       var w1 = 20 + 70 * logMap(p.l1, 200), w2 = p.l2 > 0 ? 20 + 70 * logMap(p.l2, 200) : 0, x1 = 300 - (w1 + w2) / 2, g = "";
       g += '<defs><linearGradient id="wh-g" x1="0" x2="1"><stop offset="0" stop-color="' + col(p.tsi) + '"/><stop offset="1" stop-color="' + col(p.tso) + '"/></linearGradient></defs>';
       g += '<rect x="40" y="40" width="' + (x1 - 40) + '" height="150" fill="' + col(p.ti) + '" fill-opacity="0.18"/><rect x="' + (x1 + w1 + w2) + '" y="40" width="' + (600 - x1 - w1 - w2) + '" height="150" fill="' + col(p.to) + '" fill-opacity="0.18"/>';
       g += '<rect x="' + x1 + '" y="40" width="' + (w1 + w2) + '" height="150" fill="url(#wh-g)" stroke="' + C_NAVY + '" stroke-width="2"/>';
       if (w2) g += '<path d="M' + (x1 + w1) + " 40V190" + '" stroke="' + C_NAVY + '" stroke-width="2" stroke-dasharray="5 4"/>';
       var dir = p.q >= 0 ? 1 : -1, sw = 2 + 6 * logMap(Math.abs(p.q), 2000), off = (dir * -ph * 36).toFixed(1);
-      [80, 115, 150].forEach(function (y) { g += '<path d="M70 ' + y + 'H570" stroke="#92400e" stroke-opacity="0.55" stroke-width="' + sw.toFixed(1) + '" stroke-dasharray="14 22" stroke-dashoffset="' + off + '" stroke-linecap="round"/>'; });
+      [80, 115, 150].forEach(function (y) { g += '<path d="M70 ' + y + 'H570" stroke="var(--warn)" stroke-opacity="0.55" stroke-width="' + sw.toFixed(1) + '" stroke-dasharray="14 22" stroke-dashoffset="' + off + '" stroke-linecap="round"/>'; });
       g += t(90, 32, "Inside " + fmt(p.ti, 0) + " °C", { s: 13.5, w: 700, c: C_NAVY }) + t(590, 32, "Outside " + fmt(p.to, 0) + " °C", { a: "end", s: 13.5, w: 700, c: C_NAVY });
-      g += t(x1 - 6, 210, fmt(p.tsi, 1) + " °C", { a: "end", s: 12.5, c: "#334155" }) + t(x1 + w1 + w2 + 6, 210, fmt(p.tso, 1) + " °C", { s: 12.5, c: "#334155" });
-      g += t(300, 230, "Heat flow " + fmt(Math.abs(p.q), 1) + " W/m² " + (dir > 0 ? "outwards" : "inwards"), { a: "middle", s: 12.5, c: "#92400e", w: 600 });
+      g += t(x1 - 6, 210, fmt(p.tsi, 1) + " °C", { a: "end", s: 12.5, c: "var(--ink)" }) + t(x1 + w1 + w2 + 6, 210, fmt(p.tso, 1) + " °C", { s: 12.5, c: "var(--ink)" });
+      g += t(300, 230, "Heat flow " + fmt(Math.abs(p.q), 1) + " W/m² " + (dir > 0 ? "outwards" : "inwards"), { a: "middle", s: 12.5, c: "var(--warn)", w: 600 });
       return g;
     },
   };
@@ -568,28 +568,28 @@
     };
     var g = "";
     yt.forEach(function (t) {
-      g += '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + Y(t) + '" y2="' + Y(t) + '" stroke="#e5e7eb"/>' +
+      g += '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + Y(t) + '" y2="' + Y(t) + '" stroke="var(--rule)"/>' +
         '<text x="' + (L - 8) + '" y="' + (Y(t) + 4) + '" text-anchor="end">' + tickLabel(t) + "</text>";
     });
     xt.forEach(function (t) {
-      g += '<line x1="' + X(t) + '" x2="' + X(t) + '" y1="' + (H - B) + '" y2="' + (H - B + 5) + '" stroke="#1f2937"/>' +
+      g += '<line x1="' + X(t) + '" x2="' + X(t) + '" y1="' + (H - B) + '" y2="' + (H - B + 5) + '" stroke="var(--ink)"/>' +
         '<text x="' + X(t) + '" y="' + (H - B + 19) + '" text-anchor="middle">' + tickLabel(t) + "</text>";
     });
     (p.refs || []).forEach(function (rf) {
-      g += '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + Y(rf.y) + '" y2="' + Y(rf.y) + '" stroke="#c2410c" stroke-width="1.5" stroke-dasharray="6 4"/>' +
-        '<text x="' + (W - R + 6) + '" y="' + (Y(rf.y) + 4) + '" fill="#c2410c">' + esc(rf.label) + "</text>";
+      g += '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + Y(rf.y) + '" y2="' + Y(rf.y) + '" stroke="var(--warn)" stroke-width="1.5" stroke-dasharray="6 4"/>' +
+        '<text x="' + (W - R + 6) + '" y="' + (Y(rf.y) + 4) + '" fill="var(--warn)">' + esc(rf.label) + "</text>";
     });
     p.series.forEach(function (sr) {
-      g += '<path fill="none" stroke="#0f766e" stroke-width="2.5" stroke-linejoin="round" d="' +
+      g += '<path fill="none" stroke="var(--cobalt)" stroke-width="2.5" stroke-linejoin="round" d="' +
         sr.pts.map(function (q, i) { return (i ? "L" : "M") + X(q[0]).toFixed(1) + " " + Y(q[1]).toFixed(1); }).join("") + '"/>';
     });
     (p.marks || []).forEach(function (m) {
-      g += '<circle cx="' + X(m.x).toFixed(1) + '" cy="' + Y(m.y).toFixed(1) + '" r="4.5" fill="#ffffff" stroke="#0f766e" stroke-width="2"/>';
+      g += '<circle cx="' + X(m.x).toFixed(1) + '" cy="' + Y(m.y).toFixed(1) + '" r="4.5" fill="var(--panel)" stroke="var(--cobalt)" stroke-width="2"/>';
     });
-    g += '<path d="M' + L + " " + T + "V" + (H - B) + "H" + (W - R) + '" fill="none" stroke="#1f2937" stroke-width="1.5"/>';
+    g += '<path d="M' + L + " " + T + "V" + (H - B) + "H" + (W - R) + '" fill="none" stroke="var(--ink)" stroke-width="1.5"/>';
     g += '<text x="' + ((L + W - R) / 2) + '" y="' + (H - 10) + '" text-anchor="middle" font-size="13">' + esc(p.x.label) + "</text>";
     g += '<text transform="translate(18 ' + ((T + H - B) / 2) + ') rotate(-90)" text-anchor="middle" font-size="13">' + esc(p.y.label) + "</text>";
-    return '<svg viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="' + esc(p.y.label + " against " + p.x.label) + '" font-family="Arial, Helvetica, sans-serif" font-size="12" fill="#1f2937">' + g + "</svg>";
+    return '<svg viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="' + esc(p.y.label + " against " + p.x.label) + '" font-family="var(--display)" font-size="12" fill="var(--ink)">' + g + "</svg>";
   }
 
   function fmt(x, dp) {
