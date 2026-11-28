@@ -103,6 +103,7 @@ projects:
     period: Planned for 2027
     summary: A planned computer study (CFD) on photovoltaic solar panels.
     role: Will lead the study.
+    people: [Dessy Ade Pratiwi]
     skills: [CFD]
 
   - id: lift

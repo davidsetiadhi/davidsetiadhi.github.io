@@ -13,11 +13,13 @@ team:
     affiliations:
       - Department of Computer Engineering, Bursa Technical University, Türkiye
     orcid: 0009-0003-7255-1610
+    photo: /assets/img/people/fatih-rahman-hermawan.jpg
     focus: Analysis software and data checking for the engine, dental and soil projects.
   - name: Fahmi Faqih Montoya
     affiliations:
       - Department of International Trade and Logistics, Bursa Technical University, Türkiye
     orcid: 0009-0008-4266-3415
+    photo: /assets/img/people/fahmi-faqih-montoya.jpg
     focus: Checks the calculation and cost workbook in the lift steel study.
   - name: Fadhil Arrahman
     affiliations:
@@ -42,3 +44,8 @@ collaborators:
       - Sakarya University of Applied Sciences, Türkiye
     orcid: 0009-0001-5357-0475
     photo: /assets/img/people/desi-gustiani.jpg
+  - name: Dessy Ade Pratiwi
+    affiliations:
+      - Department of Mechanical Engineering, Universitas Muhammadiyah Surakarta, Indonesia
+    orcid: 0009-0007-0798-7388
+    photo: /assets/img/people/dessy-ade-pratiwi.jpg
